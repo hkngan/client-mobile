@@ -1,16 +1,20 @@
-import { SafeAreaView, StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import { SafeAreaView, StyleSheet, Text, View, Dimensions, TouchableOpacity, useColorScheme } from 'react-native'
+import React, { useState, useEffect, useContext } from 'react'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Heading } from '../components'
 import { COLORS, FONTSIZE, SPACING } from '../themes/theme'
 import { useNavigation } from '@react-navigation/native'
+import { BookingContext } from '../context/bookingContext'
 
 const SelectSeatScreen = ({route}) => {
   const navigation = useNavigation()
 
   const [selectedSeat, setSelectedSeat] = useState([]);
-  const [totalPrice, setTotalPrice] = useState(0);
+  const [total, setTotalPrice] = useState(0);
 
+  const { movie, selectedShowtime, setAmount } = useContext(BookingContext);
+  const {title} = movie
+  const {cost, time} = selectedShowtime
   const generateSeats = (route) => {
     const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
     const seats = [];
@@ -21,7 +25,7 @@ const SelectSeatScreen = ({route}) => {
   
       for (let j = 1; j <= 10; j++) {
         const seatNumber = `${row}${j}`;
-        let price = i >= rows.length - 2 ? route.params.cost + 30000 : route.params.cost;
+        let price = i >= rows.length - 2 ? cost + 30000 : cost;
         rowSeats.push(
           <TouchableOpacity 
             style={[
@@ -57,27 +61,25 @@ const SelectSeatScreen = ({route}) => {
   }
   
   useEffect(() => {
-    let totalPrice = 0;
+    let total = 0;
 
     selectedSeat.forEach((seatNumber) => {
       let price;
       if (seatNumber.startsWith("G") || seatNumber.startsWith("H")) {
-        price = parseInt(route.params.cost) + 30000;
+        price = parseInt(cost) + 30000;
       } else {
-        price = parseInt(route.params.cost);
+        price = parseInt(cost);
       }
-      console.log(price); // Kiểm tra giá trị của price
-
-      totalPrice += price ;
+      total += price ;
     });
   
-    setTotalPrice(totalPrice);
+    setTotalPrice(total);
   }, [selectedSeat]);
   
   return (
     <ScrollView style={styles.container}>
         <SafeAreaView>
-            <Heading header={`${route.params.title} | (${route.params.time})`}/>
+            <Heading header={`${title} | (${time})`}/>
             <View style={styles.seatContainer}>
                 <View style={styles.screenContainer}>
                     <Text style={styles.screenText}>Màn hình</Text>
@@ -108,19 +110,17 @@ const SelectSeatScreen = ({route}) => {
               <View style={styles.priceContainer}>
               <View>
                 <Text style={styles.selectedSeat}>Ghế: {selectedSeat.join(', ')}</Text>
-                <Text style={styles.priceText}>Tạm tính: {totalPrice}</Text>
+                <Text style={styles.priceText}>Tạm tính: {total}</Text>
               </View>
               <TouchableOpacity 
                 style={styles.buttonContainer}
-                onPress={()=> navigation.navigate('SelectComboStack',{
-                  selectedSeat: selectedSeat,
-                  totalPrice: totalPrice,
-                  room: route.params.room,
-                  time: route.params.time,
-                  date: route.params.date,
-                  title: route.params.title,
-                 
-                })}
+                onPress={()=> {
+                  setAmount({
+                    seat: selectedSeat,
+                    sotien: total
+                  }) 
+                  navigation.navigate('SelectComboStack')
+                }}
               >
                 <Text style={styles.buttonText}>Tiếp tục</Text>
               </TouchableOpacity>

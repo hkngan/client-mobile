@@ -1,9 +1,10 @@
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native'
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import { COLORS, FONTSIZE, SPACING } from '../themes/theme';
 import { Heading } from '../components';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import { BookingContext } from '../context/bookingContext';
 
 const SelectTheaterScreen = ({route}) => {
   const navigation = useNavigation()
@@ -12,10 +13,11 @@ const SelectTheaterScreen = ({route}) => {
   const [selectedCityValue, setSelectedCityValue] = useState(null);
   const [selectedTheaterValue, setSelectedTheaterValue] = useState(null);
 
+  const { setSelectedTheater } = useContext(BookingContext);
   useEffect(() => {
     const getCity = async () => {
       try {
-        let response = await axios.get('http://192.168.1.36:3001/api/v1/admin/city-list');
+        let response = await axios.get('http://192.168.1.4:3001/api/v1/admin/city-list');
         setCityData(response.data.cityList);
       } catch (error) {
         console.log("Error in getCity func", error);
@@ -25,7 +27,7 @@ const SelectTheaterScreen = ({route}) => {
     const getTheater = async (cityId) => {
       try {
         if (cityId) {
-          let response = await axios.get(`http://192.168.1.36:3001/api/v1/admin/sort-theater/${cityId}`);
+          let response = await axios.get(`http://192.168.1.4:3001/api/v1/admin/sort-theater/${cityId}`);
           setTheaterData(response.data.theaterList);  
         } else {
           console.log('cityId is null or empty');
@@ -51,7 +53,7 @@ const SelectTheaterScreen = ({route}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Heading header={'Chọn rạp'} />
+      <Heading header={"Chọn rạp"} />
       <View style={styles.wrapper}>
           <View style={styles.cityContainer}>
             {cityData.map((city) => {
@@ -90,12 +92,12 @@ const SelectTheaterScreen = ({route}) => {
           
           <TouchableOpacity 
             style={styles.continueButton}
-            onPress={() => navigation.navigate('BookingSeatStack', {
-              title: route.params.title,
+            onPress={() =>{
+              setSelectedTheater({
               theater_name: selectedTheaterValue,
-              img: route.params.img
-
-            })}
+              })
+              navigation.navigate('BookingSeatStack')
+            }}
           > 
             <Text style={[styles.buttonText, {textAlign: 'center', textTransform: 'uppercase', fontWeight: 'bold', color: COLORS.White}]}>Tiếp tục</Text>
           </TouchableOpacity>

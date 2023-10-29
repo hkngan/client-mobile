@@ -9,12 +9,13 @@ import {
   Dimensions,
   Modal
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { COLORS, SPACING, FONTSIZE } from "../themes/theme";
 import { Heading } from "../components";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import axios from "axios";
+import { BookingContext } from "../context/bookingContext";
 
 const generateDate = () => {
   const date = new Date();
@@ -41,6 +42,28 @@ const SelectShowtime = ({ route }) => {
   const [selectedPrice, setSelectedPrice] = useState(null)
   const [isAlertVisible, setAlertVisible] = useState(false);
 
+
+  const { movie, selectedTheater, setSelectedShowtime } = useContext(BookingContext);
+  const {title, rate} = movie;
+  const {theater_name} = selectedTheater;
+
+useEffect(() => {
+  const getShowtimes = async () => {
+    try {
+        const formattedDate = `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-${selectedDate.toString().padStart(2, '0')}`;
+        const encodedMovieName = encodeURIComponent(title);
+        const encodedTheaterName = encodeURIComponent(theater_name);
+        let res = await axios.get(
+          `http://10.13.129.12:3001/api/v1/movie/showtime/film?theater_name=${encodedTheaterName}&movie_name=${encodedMovieName}&day=${formattedDate}`
+        );
+        setShowtimes(res.data.showtimeList);
+      
+    } catch (error) {
+      console.log("Error in getShowtimes func", error);
+    }
+  };
+  getShowtimes();
+}, [selectedDate]);
   const showAlert = () => {
     setAlertVisible(true);
   }
@@ -48,24 +71,6 @@ const SelectShowtime = ({ route }) => {
   const hideAlert = () => {
     setAlertVisible(false);
   }
-  useEffect(() => {
-    const getShowtimes = async () => {
-      try {
-        const formattedDate = `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-${selectedDate.toString().padStart(2, '0')}`;
-        const encodedMovieName = encodeURIComponent(route.params.title);
-        const encodedTheaterName = encodeURIComponent(route.params.theater_name);
-        let res = await axios.get(
-          `http://192.168.1.36:3001/api/v1/movie/showtime/film?theater_name=${encodedTheaterName}&movie_name=${encodedMovieName}&day=${formattedDate}`
-        );
-        setShowtimes(res.data.showtimeList);
-      } catch (error) {
-        console.log("Error in getShowtimes func", error);
-      }
-    };
-    getShowtimes();
-  }, [selectedDate]);
-  // console.log(showtimes)
-
   const handleCityPress = (date) => {
     setSelectedDate(date);
   };
@@ -77,14 +82,13 @@ const SelectShowtime = ({ route }) => {
   };
   const handleSubmit = () => {
     try {
-      navigation.navigate('SelectSeatStack',{
+      setSelectedShowtime({
         cost: selectedPrice,
         room: selectedRoom,
         time: selectedTime,
-        date: `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-${selectedDate.toString().padStart(2, '0')}`,
-        title: route.params.title,
-        img: route.params.img
+        date: `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-${selectedDate.toString().padStart(2, '0')}`
       })
+      navigation.navigate('SelectSeatStack')
       hideAlert()
     } catch (error) {
       console.log('Error in handleSubmit', error)
@@ -94,7 +98,7 @@ const SelectShowtime = ({ route }) => {
   return (
     <ScrollView style={styles.container}>
       <SafeAreaView>
-        <Heading header={route.params?.theater_name} />
+       <Heading header={theater_name} />
         <View>
         <FlatList
           data={dateArray}
@@ -128,7 +132,7 @@ const SelectShowtime = ({ route }) => {
           <View>
             <View style={styles.titleContainer}>
               <MaterialCommunityIcons name="movie-star" size={40} color={COLORS.Red} style={styles.icon}/>
-              <Text style={styles.titleText}>{route.params.title}</Text>
+              <Text style={styles.titleText}>{title}</Text>
             </View>
             <View style={styles.contentContainer}>
               {showtimes.map((showtime) =>{
@@ -161,8 +165,9 @@ const SelectShowtime = ({ route }) => {
           <View style={styles.alertBox}>
             <Text style={styles.titleAlert}>thông báo</Text>
             <Text style={styles.contentAlert}>
-              Rạp chiếu phim hiện tại bạn đang chọn là {route.params.theater_name}, suất: {selectedTime}, phòng chiếu:  {selectedRoom}
+              Rạp chiếu phim hiện tại bạn đang chọn là {theater_name}, suất: {selectedTime}, phòng chiếu:  {selectedRoom}
             </Text>
+            <Text style={styles.redText}>{rate}</Text>
             <View style={styles.btnContainer}>
             <TouchableOpacity style={styles.cancelButton} onPress={hideAlert}>
                 <Text style={{textAlign:'center', fontWeight: 'bold', color: COLORS.Red}}>Hủy</Text>
@@ -175,9 +180,7 @@ const SelectShowtime = ({ route }) => {
             </View>
           </View>
         </View>
-      </Modal>
-
-
+      </Modal> 
       </SafeAreaView>
     </ScrollView>
   );
@@ -237,7 +240,8 @@ const styles = StyleSheet.create({
   titleContainer:{
     marginVertical: SPACING.space_10,
     backgroundColor: '#EEEDED',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignContent: 'center'
   },
   icon:{
     marginHorizontal: SPACING.space_10,
@@ -248,7 +252,8 @@ const styles = StyleSheet.create({
     marginHorizontal: SPACING.space_10,
     marginVertical: SPACING.space_10,
     fontSize: FONTSIZE.size_18,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    alignSelf: 'center'
   },
   buttonContainer: {
     alignItems: "center",
@@ -331,6 +336,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     textTransform: 'uppercase',
     marginVertical: SPACING.space_10
+  },
+  redText:{
+    color: COLORS.Red,
+    textTransform: 'capitalize'
   },
   btnContainer:{
     flexDirection: 'row',

@@ -11,12 +11,13 @@ import {
   Image,
 } from "react-native";
 import PropTypes from "deprecated-react-native-prop-types";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { COLORS, FONTSIZE, SPACING } from "../themes/theme";
 import { SearchBox, Title, MovieCard, MainCard } from "../components";
 import { useNavigation } from "@react-navigation/native";
 import { image } from "../constant";
 import axios from "axios";
+import { BookingContext } from "../context/bookingContext";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -24,11 +25,13 @@ const HomeScreen = () => {
   const [nowPlayingMovieList, setNowPlayingMovieList] = useState([]);
   const [upComingMovieList, setUpComingMovieList] = useState([]);
 
+  const { setMovie } = useContext(BookingContext);
+
   useEffect(() => {
     const getNowPlayingMovieList = async () => {
       try {
         let response = await axios.get(
-          "http://192.168.1.36:3001/api/v1/admin/nowplaying-movie-list"
+          "http://10.13.129.12:3001/api/v1/admin/nowplaying-movie-list"
         );
         setNowPlayingMovieList(response.data.movieList);
       } catch (error) {
@@ -38,7 +41,7 @@ const HomeScreen = () => {
     const getUpComingMovieList = async () => {
       try {
         let response = await axios.get(
-          "http://192.168.1.36:3001/api/v1/admin/upcoming-movie-list"
+          "http://10.13.129.12:3001/api/v1/admin/upcoming-movie-list"
         );
         setUpComingMovieList(response.data.movieList);
       } catch (error) {
@@ -73,18 +76,20 @@ const HomeScreen = () => {
       <SafeAreaView>
         <StatusBar hidden />
         <View style={styles.inputContainer}>
-          <Image style={styles.logo} source={image.logo} />
+          {/* <Image style={styles.logo} source={image.logo} /> */}
           <Text style={{
             color: COLORS.White,
-            fontSize: FONTSIZE.size_24,
-            shadowColor:COLORS.White,
+            textAlign: 'center',
+            alignSelf: 'center',
+            fontSize: FONTSIZE.size_30,
+            shadowColor:COLORS.Red,
             shadowOffset: {
-              height:1,
-              width: 1
+              height:3,
+              width: 3
             },
-            shadowOpacity: 0.8,
-            shadowRadius: 0.8,
-            marginLeft: SPACING.space_36*2,
+            shadowOpacity: 0.9,
+            shadowRadius: 0.9,
+            elevation: 20
           }}>CINEMAGIC</Text>
         </View>
         <Title title="Đang chiếu" />
@@ -115,7 +120,10 @@ const HomeScreen = () => {
               <MainCard
                 shouldMarginateAtEnd={true}
                 navigate={() => {
-                  navigation.push("MovieDetailStack", { id: item._id });
+                  setMovie({
+                    id: item._id
+                  })
+                  navigation.push("MovieDetailStack")
                 }}
                 cardWidth={WIDTH * 0.8}
                 isFirst={index == 0 ? true : false}
@@ -123,7 +131,7 @@ const HomeScreen = () => {
                 title={item.movie_name}
                 time={item.time}
                 date={item.start_date}
-                imagePath={`http://192.168.1.36:3001/${updatedPath}`}
+                imagePath={`http://10.13.129.12:3001/${updatedPath}`}
                 genre={item.genres}
               />
             );
@@ -158,7 +166,10 @@ const HomeScreen = () => {
               <MovieCard
                 shouldMarginateAtEnd={true}
                 navigate={() => {
-                  navigation.push("MovieDetailStack", { id: item._id });
+                  setMovie({
+                    id: item._id
+                  })
+                  navigation.push("MovieDetailStack")
                 }}
                 cardWidth={WIDTH * 0.5}
                 isFirst={index == 0 ? true : false}
@@ -166,7 +177,7 @@ const HomeScreen = () => {
                 title={item.movie_name}
                 time={item.time}
                 date={item.start_date}
-                imagePath={`http://192.168.1.36:3001/${updatedPath}`}
+                imagePath={`http://10.13.129.12:3001/${updatedPath}`}
                 genre={item.genres}
               />
             );
@@ -204,7 +215,6 @@ const styles = StyleSheet.create({
     marginHorizontal: SPACING.space_36,
     marginTop: SPACING.space_50,
     alignItems: "center",
-    flexDirection: 'row'
   },
   containerGap: {
     gap: SPACING.space_36,

@@ -19,7 +19,7 @@ const SignupScreen = () => {
         Alert.alert('Please enter all fields')
         return;
       }
-      const {data} = await axios.post('http://192.168.1.6:3001/api/v1/user/user-signup', {
+      const {data} = await axios.post('http://10.13.129.12:3001/api/v1/user/user-signup', {
         
         name,
         phone_number,

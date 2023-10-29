@@ -12,15 +12,19 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true
-    },
     "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#000"
-      }
+      "permissions": [
+        "ACCESS_NETWORK_STATE",
+        "INTERNET"
+      ]
     },
-    "web": {
-    }
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "allowsArbitraryLoads": true
+        }
+      }
+    }    
   }
 }

@@ -1,9 +1,10 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import { BORDER_RADIUS, COLORS, SPACING, FONTSIZE } from "../themes/theme";
 import Dash from 'react-native-dash';
 import { useNavigation } from "@react-navigation/native";
 import {FontAwesome} from '@expo/vector-icons'
+import { BookingContext } from "../context/bookingContext";
 const MainCard = ({
   title,
   imagePath,
@@ -18,6 +19,8 @@ const MainCard = ({
   genre
 }) => {
   const navigation = useNavigation()
+  const { setMovie } = useContext(BookingContext);
+
   return (
     <View
       style={[
@@ -37,9 +40,8 @@ const MainCard = ({
         <View>
           <Image
             style={[styles.img, { width: cardWidth, height: 300 }]}
-            source={{uri:imagePath}}
+            source={{ uri: imagePath }}
             resizeMode="stretch"
-
           />
         </View>
         <View style={styles.textContainer}>
@@ -48,12 +50,10 @@ const MainCard = ({
               {title}
             </Text>
             <View style={styles.infoContainer}>
-            <FontAwesome name="clock-o" style={styles.starIcon} />
-            <Text style={styles.infoText}>
-              {time} phút 
-            </Text>
-            <Text style={styles.infoText}>{date}</Text>
-          </View>
+              <FontAwesome name="clock-o" style={styles.starIcon} />
+              <Text style={styles.infoText}>{time} phút</Text>
+              <Text style={styles.infoText}>{date}</Text>
+            </View>
             <View style={styles.gerneContainer}>
               <View style={styles.gerneContainer}>
                 {genre.map((item, index) => (
@@ -79,11 +79,13 @@ const MainCard = ({
           ></View>
           <TouchableOpacity
             style={styles.buttonContainer}
-            onPress={() =>
-              navigation.navigate("SelectTheaterStack", {
+            onPress={() => {
+              setMovie({
                 title: title,
-              })
-            }
+                img: imagePath,
+              });
+              navigation.navigate("SelectTheaterStack");
+            }}
           >
             <Text style={styles.txtButton}>book now</Text>
           </TouchableOpacity>

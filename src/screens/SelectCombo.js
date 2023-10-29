@@ -1,12 +1,17 @@
 import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { COLORS, FONTSIZE, SPACING } from '../themes/theme'
 import { Heading } from '../components'
 import { AntDesign } from '@expo/vector-icons'; 
 import axios from 'axios'
 import { useNavigation } from '@react-navigation/native';
+import { BookingContext } from '../context/bookingContext';
+
 const SelectCombo = ({route}) => {
   const navigation = useNavigation()
+
+  const {amount, setSelectedCombos} = useContext(BookingContext)
+  const {sotien, seat} = amount
 
   const [comboData, setComboData] = useState([])
   const [counts, setCounts] = useState([])
@@ -15,14 +20,15 @@ const SelectCombo = ({route}) => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await axios.get('http://192.168.1.36:3001/api/v1/admin/combo-list')
+        const response = await axios.get('http://10.13.129.12:3001/api/v1/admin/combo-list')
         setComboData(response.data.comboList)
         setCounts(response.data.comboList.map(() => 0));
+        
       } catch (error) {
         console.log('Error in getData func', error)
       }
     }
-   
+
     getData()
   }, [])
   const setIncrease = (index) => {
@@ -39,8 +45,8 @@ const SelectCombo = ({route}) => {
   }
 
   const totalPrice = selectedCombo && selectedCombo.price
-    ? parseInt(route.params.totalPrice + selectedComboCount * selectedCombo.price)
-    : parseInt(route.params.totalPrice)
+    ? parseInt(sotien + selectedComboCount * selectedCombo.price)
+    : parseInt(sotien)
 
   return (
     <SafeAreaView style={styles.container}>
@@ -52,7 +58,7 @@ const SelectCombo = ({route}) => {
             return (
               <View style={styles.comboContainer} key={combo._id}>
                 <Image
-                  source={{uri: `http://192.168.1.36:3001/${updatedPath}`}}
+                  source={{uri: `http://10.13.129.12:3001/${updatedPath}`}}
                   style={styles.img}
                 />
                 <Text style={styles.titleText}>{combo.combo_name}</Text>
@@ -60,11 +66,11 @@ const SelectCombo = ({route}) => {
                 <View style={styles.priceContainer}>
                   <Text style={styles.price}>Giá: {combo.price}</Text>
                   <View style={styles.addContainer}>
-                    <TouchableOpacity onPress={() => setDecrease(index)}>
+                    <TouchableOpacity style={{width: 30, height: 30, alignItems:'center'}} onPress={() => setDecrease(index)}>
                       <AntDesign name="minus" size={18} color="black" />
                     </TouchableOpacity>
                     <Text style={{ width: 30, textAlign: 'center' }}>{counts[index]}</Text>
-                    <TouchableOpacity onPress={() => setIncrease(index)}>
+                    <TouchableOpacity  style={{width: 30, height: 30, alignItems:'center'}} onPress={() => setIncrease(index)}>
                     <AntDesign name="plus" size={18} color="black" />
                     </TouchableOpacity>
                   </View>
@@ -76,15 +82,14 @@ const SelectCombo = ({route}) => {
 
       </View>
     </ScrollView>
-    {console.log(route.params.totalPrice)}
-
     <View style={[styles.totalContainer, styles.shadow]}>
               <View>
-                <Text style={styles.selectedSeat}>Ghế: {route.params.selectedSeat.join(', ')}</Text>
-                {selectedCombo && selectedCombo.price ? (
+                <Text style={styles.selectedSeat}>Ghế: {seat ? seat.join(', ') : ''}</Text>
+                {selectedCombo && selectedComboCount > 0 ? (
                 <View>
                   <Text style={styles.selectedSeat}>{selectedComboCount}x Combo</Text>
                   <Text style={styles.priceText}>Tổng cộng: {totalPrice}  </Text>
+                  
                 </View>
                 ): (
                 <View>
@@ -94,15 +99,16 @@ const SelectCombo = ({route}) => {
               </View>
               <TouchableOpacity 
                 style={styles.buttonContainer}
-                onPress={()=> navigation.navigate('OrderScreenStack',{
-                  selectedSeat: route.params.selectedSeat,
-                  totalPrice: parseInt(route.params.totalPrice + selectedComboCount * selectedCombo.price),
-                  room: route.params.room,
-                  time: route.params.time,
-                  date: route.params.date,
-                  title: route.params.title,
-                 
-                })}
+                onPress={()=> {
+                 setSelectedCombos({
+                  thanhtien: totalPrice,
+                  combo_name: selectedCombo.combo_name,
+                  quantity: selectedComboCount,
+                  gia_combo: selectedCombo.price,
+                  img_combo: selectedCombo.img
+                 })
+                 navigation.navigate('OrderScreenStack')
+                }}
               >
                 <Text style={styles.buttonText}>Tiếp tục</Text>
               </TouchableOpacity>
@@ -110,7 +116,6 @@ const SelectCombo = ({route}) => {
       </SafeAreaView>
   )
 }
-
 export default SelectCombo
 const screenWidth = Dimensions.get('window').width
 const styles = StyleSheet.create({
@@ -151,14 +156,22 @@ const styles = StyleSheet.create({
     marginHorizontal: SPACING.space_20,
     marginVertical: SPACING.space_10-5,
     justifyContent: 'space-between',
+    alignContent: 'center',
   },
   addContainer:{
     flexDirection: 'row',
-    paddingHorizontal: SPACING.space_10,
-    paddingVertical: 5
+    marginHorizontal: SPACING.space_10,
+    marginVertical: 5,
+    
+    alignSelf: 'center',
+
   },
   price:{
-    alignSelf: 'center'
+    alignSelf: 'center',
+    height: 30,
+    justifyContent: 'center',
+    alignContent: 'center',
+
   },
   totalContainer:{
     backgroundColor: COLORS.White,

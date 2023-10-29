@@ -10,50 +10,51 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { COLORS, FONTSIZE, SPACING } from "../themes/theme";
 import { Heading } from "../components";
-import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { WebView } from 'react-native-webview';
+import { WebView } from "react-native-webview";
 import axios from "axios";
+import { BookingContext } from "../context/bookingContext";
 
 const MovieDetailScreen = ({ route }) => {
   const navigation = useNavigation();
   const [movieData, setMovieData] = useState([]);
 
+  const { setMovie, movie } = useContext(BookingContext);
+  const {id} = movie
   useEffect(() => {
     const getNMovieDetails = async () => {
       try {
-        // console.log(route.params.id);
         let res = await axios.get(
-          `http://192.168.1.36:3001/api/v1/movie/detail-nmovie/${route.params.id}`
+          `http://10.13.129.12:3001/api/v1/movie/detail-nmovie/${id}`
         );
         setMovieData(res.data.detailMovie);
       } catch (error) {
-        console.log("Loi o ham lay du lieu phim", error);
+        console.log("Loi o ham getNMovieDetails", error);
       }
     };
     const getUMovieDetails = async () => {
       try {
-        // console.log(route.params.id);
         let res = await axios.get(
-          `http://192.168.1.36:3001/api/v1/movie/detail-umovie/${route.params.id}`
+          `http://10.13.129.12:3001/api/v1/movie/detail-umovie/${id}`
         );
         setMovieData(res.data.detailMovie);
       } catch (error) {
-        console.log("Loi o ham lay du lieu phim", error);
+        console.log("Loi o ham getUMovieDetails", error);
       }
     };
     getNMovieDetails();
-    getUMovieDetails()
-  }, []);
+    getUMovieDetails();
+  }, [id]);
+
   const getVideoID = (url) => {
     const match = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
     return (match && match[1]) || null;
   };
-  if (movieData.length === 0 ) {
+  if (movieData.length === 0) {
     return (
       <ScrollView
         style={styles.container}
@@ -73,7 +74,6 @@ const MovieDetailScreen = ({ route }) => {
     );
   }
 
-  
   const originalPath = movieData.img;
   const updatedPath = originalPath.replace(/\\/g, "/");
   return (
@@ -83,16 +83,16 @@ const MovieDetailScreen = ({ route }) => {
       showsVerticalScrollIndicator={false}
     >
       <SafeAreaView>
-           <Heading header={'Chi tiết'}/>
+        <Heading header={"Chi tiết"} />
 
-           <WebView
+        <WebView
           style={styles.imgBackground}
           source={{ uri: `https://www.youtube.com/embed/${getVideoID(movieData?.trailer)}` }}
           allowsFullscreenVideo={true}
         />
         <View style={styles.imgBackground}>
           <Image
-            source={{ uri: `http://192.168.1.36:3001/${updatedPath}` }}
+            source={{ uri: `http://10.13.129.12:3001/${updatedPath}` }}
             style={styles.imgMovie}
           />
         </View>
@@ -126,33 +126,34 @@ const MovieDetailScreen = ({ route }) => {
           </View>
         </View>
         <View style={styles.infoContainer}>
-      
-                <Text style={styles.gerneText}>
-                  Thể loại: {movieData?.genres}
-                </Text>
-          <View style={styles.rateContainer}></View>
+          <Text style={styles.gerneText}>Thể loại: {movieData?.genres}</Text>
           <Text style={styles.descrText}>Mô tả: {movieData?.des}</Text>
         </View>
-        <Text style={[
-            styles.txt, 
+        <Text
+          style={[
+            styles.txt,
             {
-              color: COLORS.Red, 
+              color: COLORS.Red,
               paddingHorizontal: SPACING.space_4,
               marginVertical: SPACING.space_4,
-              }]}>
-              RATE: {movieData?.rate}
-              </Text>
+            },
+          ]}
+        >
+          RATE: {movieData?.rate}
+        </Text>
 
         <View>
           <TouchableOpacity
             style={styles.buttonContainer}
-            onPress={() =>
-              navigation.push("SelectTheaterStack", {
+            onPress={() => {
+              setMovie({
                 title: movieData.movie_name,
-                img: `http://192.168.1.36:3001/${updatedPath}` 
-              })
-            }
-          > 
+                img: `http://10.13.129.12:3001/${updatedPath}`,
+                rate: movieData.rate
+              });
+              navigation.navigate("SelectTheaterStack");
+            }}
+          >
             <Text style={styles.buttonText}>Book now</Text>
           </TouchableOpacity>
         </View>
@@ -169,7 +170,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: "center",
     justifyContent: "center",
-    paddingVertical: SPACING.space_8
+    paddingVertical: SPACING.space_8,
   },
   container: {
     display: "flex",
@@ -186,7 +187,7 @@ const styles = StyleSheet.create({
   imgBackground: {
     width: "100%",
     aspectRatio: 3072 / 1500,
-    position: 'relative'
+    position: "relative",
   },
   linearGradient: {
     height: "100%",
@@ -202,8 +203,8 @@ const styles = StyleSheet.create({
   icon: {
     marginRight: SPACING.space_8,
   },
-  box:{
-    flexDirection: 'row',
+  box: {
+    flexDirection: "row",
     paddingHorizontal: SPACING.space_15,
     // paddingVertical: SPACING.space_15
   },
@@ -212,7 +213,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    marginRight: SPACING.space_20
+    marginRight: SPACING.space_20,
   },
   txt: {
     fontSize: FONTSIZE.size_16,
@@ -241,14 +242,14 @@ const styles = StyleSheet.create({
   },
   gerneText: {
     color: COLORS.White,
-    fontSize: FONTSIZE.size_16
+    fontSize: FONTSIZE.size_16,
+    marginVertical: SPACING.space_4,
   },
 
   infoContainer: {
     flex: 1,
     marginHorizontal: SPACING.space_8,
     marginVertical: SPACING.space_4,
-
   },
   rateContainer: {
     flex: 1,
@@ -260,7 +261,6 @@ const styles = StyleSheet.create({
   descrText: {
     color: COLORS.White,
     fontSize: FONTSIZE.size_16,
-
   },
   castContainer: {
     display: "flex",

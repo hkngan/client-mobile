@@ -17,6 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AuthContext } from "../context/authContext";
+
 const LoginScreen = () => {
   const navigation = useNavigation();
   const navigateToGetPassword = () => {
@@ -34,27 +35,27 @@ const LoginScreen = () => {
 
   const handleLogin = async () => {
     try {
-      if(!phone_number || !password){
-        Alert.alert('Please enter all fields')
-        return
-      }
-      const {data} = await axios.post('http://192.168.1.4:3001/api/v1/user/user-login', {
-        phone_number,
-        password
-      })
-      setState(data)
-      await AsyncStorage.setItem('@auth', JSON.stringify(data))
-      navigation.navigate('TabStack')
-    } catch (error) {
-      alert(error.response.data.message)
-      console.log(error)
-    }
-  }
+        const apiUrl = 'http://10.13.129.12:3001/api/v1/user/user-login'
 
+        if (!phone_number || !password) {
+          Alert.alert('Please enter all fields');
+          return;
+        }
+        const { data } = await axios.post(apiUrl, {
+          phone_number,
+          password
+        });
+        authContext.setState(data);
+        await AsyncStorage.setItem('@auth', JSON.stringify(data));
+        navigation.navigate('TabStack');
+    } catch (error) {
+      console.error(error);
+      alert('An error occurred while logging in. Please try again.');
+    }
+  };
   const getData = async () => {
     let data = await AsyncStorage.getItem('@auth')
-    // console.log("Storage",data)
-  }
+   }
   getData()
   return (
     <ScrollView
