@@ -17,6 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AuthContext } from "../context/authContext";
+import config from "../../config";
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -26,6 +27,8 @@ const LoginScreen = () => {
   const navigateToSignup = () => {
     navigation.navigate("SignupStack");
   };
+  const IPV4 = config.extra.IPV4
+  const PORT = config.extra.PORT
   // const [state, setState] = useContext(AuthContext)
   const authContext = useContext(AuthContext)
   const state = authContext.state
@@ -35,7 +38,7 @@ const LoginScreen = () => {
 
   const handleLogin = async () => {
     try {
-        const apiUrl = 'http://10.13.129.12:3001/api/v1/user/user-login'
+        const apiUrl = `http://${IPV4}:${PORT}/api/v1/user/user-login`
 
         if (!phone_number || !password) {
           Alert.alert('Please enter all fields');

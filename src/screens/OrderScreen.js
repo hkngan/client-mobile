@@ -13,8 +13,12 @@ import { COLORS, FONTSIZE, SPACING } from "../themes/theme";
 import { Heading } from "../components";
 import { BookingContext } from "../context/bookingContext";
 import { image } from "../constant";
+import config from "../../config";
 
 const OrderScreen = ({ route }) => {
+  const IPV4 = config.extra.IPV4
+  const PORT = config.extra.PORT
+
   const [selectedPayment, setSelectedPayment] = useState(null);
 
   const { movie, selectedTheater, selectedShowtime, amount, selectedCombos } =
@@ -55,7 +59,7 @@ const OrderScreen = ({ route }) => {
            <View>
             <View style={styles.infoMovieContainer}>
               <Image
-                source={{ uri: `http://192.168.1.4:3001/${updatedPath}` }}
+                source={{ uri: `http://${IPV4}:${PORT}/${updatedPath}` }}
                 style={styles.poster_combo}
               />
               <View style={styles.infoMovie}>

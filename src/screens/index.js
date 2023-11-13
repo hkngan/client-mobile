@@ -15,7 +15,6 @@ export {
     LoginScreen,
     SignupScreen,
     HomeScreen,
-    SearchScreen,
     TicketScreen,
     ProfileScreen,
     MovieDetailScreen,

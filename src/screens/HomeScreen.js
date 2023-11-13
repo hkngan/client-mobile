@@ -18,7 +18,7 @@ import { useNavigation } from "@react-navigation/native";
 import { image } from "../constant";
 import axios from "axios";
 import { BookingContext } from "../context/bookingContext";
-
+import config from "../../config";
 const HomeScreen = () => {
   const navigation = useNavigation();
 
@@ -26,12 +26,13 @@ const HomeScreen = () => {
   const [upComingMovieList, setUpComingMovieList] = useState([]);
 
   const { setMovie } = useContext(BookingContext);
-
+  const IPV4 = config.extra.IPV4
+  const PORT = config.extra.PORT
   useEffect(() => {
     const getNowPlayingMovieList = async () => {
       try {
         let response = await axios.get(
-          "http://10.13.129.12:3001/api/v1/admin/nowplaying-movie-list"
+          `http://${IPV4}:${PORT}/api/v1/admin/nowplaying-movie-list`
         );
         setNowPlayingMovieList(response.data.movieList);
       } catch (error) {
@@ -41,7 +42,7 @@ const HomeScreen = () => {
     const getUpComingMovieList = async () => {
       try {
         let response = await axios.get(
-          "http://10.13.129.12:3001/api/v1/admin/upcoming-movie-list"
+          `http://${IPV4}:${PORT}/api/v1/admin/upcoming-movie-list`
         );
         setUpComingMovieList(response.data.movieList);
       } catch (error) {
@@ -131,7 +132,7 @@ const HomeScreen = () => {
                 title={item.movie_name}
                 time={item.time}
                 date={item.start_date}
-                imagePath={`http://10.13.129.12:3001/${updatedPath}`}
+                imagePath={`http://${IPV4}:${PORT}/${updatedPath}`}
                 genre={item.genres}
               />
             );
@@ -177,7 +178,7 @@ const HomeScreen = () => {
                 title={item.movie_name}
                 time={item.time}
                 date={item.start_date}
-                imagePath={`http://10.13.129.12:3001/${updatedPath}`}
+                imagePath={`http://${IPV4}:${PORT}/${updatedPath}`}
                 genre={item.genres}
               />
             );

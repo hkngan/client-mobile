@@ -5,8 +5,12 @@ import { Heading } from '../components';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { BookingContext } from '../context/bookingContext';
+import config from '../../config';
 
 const SelectTheaterScreen = ({route}) => {
+  const IPV4 = config.extra.IPV4
+  const PORT = config.extra.PORT
+
   const navigation = useNavigation()
   const [cityData, setCityData] = useState([]);
   const [theaterData, setTheaterData] = useState([]);
@@ -17,7 +21,7 @@ const SelectTheaterScreen = ({route}) => {
   useEffect(() => {
     const getCity = async () => {
       try {
-        let response = await axios.get('http://192.168.1.4:3001/api/v1/admin/city-list');
+        let response = await axios.get(`http://http://${IPV4}:${PORT}/api/v1/admin/city-list`);
         setCityData(response.data.cityList);
       } catch (error) {
         console.log("Error in getCity func", error);
@@ -27,7 +31,7 @@ const SelectTheaterScreen = ({route}) => {
     const getTheater = async (cityId) => {
       try {
         if (cityId) {
-          let response = await axios.get(`http://192.168.1.4:3001/api/v1/admin/sort-theater/${cityId}`);
+          let response = await axios.get(`http://http://${IPV4}:${PORT}/api/v1/admin/sort-theater/${cityId}`);
           setTheaterData(response.data.theaterList);  
         } else {
           console.log('cityId is null or empty');

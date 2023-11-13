@@ -6,8 +6,11 @@ import { AntDesign } from '@expo/vector-icons';
 import axios from 'axios'
 import { useNavigation } from '@react-navigation/native';
 import { BookingContext } from '../context/bookingContext';
+import config from '../../config';
 
 const SelectCombo = ({route}) => {
+  const IPV4 = config.extra.IPV4
+  const PORT = config.extra.PORT
   const navigation = useNavigation()
 
   const {amount, setSelectedCombos} = useContext(BookingContext)
@@ -20,7 +23,7 @@ const SelectCombo = ({route}) => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await axios.get('http://10.13.129.12:3001/api/v1/admin/combo-list')
+        const response = await axios.get(`http://${IPV4}:${PORT}/api/v1/admin/combo-list`)
         setComboData(response.data.comboList)
         setCounts(response.data.comboList.map(() => 0));
         
@@ -58,7 +61,7 @@ const SelectCombo = ({route}) => {
             return (
               <View style={styles.comboContainer} key={combo._id}>
                 <Image
-                  source={{uri: `http://10.13.129.12:3001/${updatedPath}`}}
+                  source={{uri: `http://${IPV4}:${PORT}/${updatedPath}`}}
                   style={styles.img}
                 />
                 <Text style={styles.titleText}>{combo.combo_name}</Text>

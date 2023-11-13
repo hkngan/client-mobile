@@ -16,6 +16,7 @@ import { useNavigation } from "@react-navigation/native";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import axios from "axios";
 import { BookingContext } from "../context/bookingContext";
+import config from "../../config";
 
 const generateDate = () => {
   const date = new Date();
@@ -32,6 +33,9 @@ const generateDate = () => {
 };
 
 const SelectShowtime = ({ route }) => {
+  const IPV4 = config.extra.IPV4
+  const PORT = config.extra.PORT
+
   const navigation = useNavigation();
 
   const [showtimes, setShowtimes] = useState([]);
@@ -54,7 +58,7 @@ useEffect(() => {
         const encodedMovieName = encodeURIComponent(title);
         const encodedTheaterName = encodeURIComponent(theater_name);
         let res = await axios.get(
-          `http://10.13.129.12:3001/api/v1/movie/showtime/film?theater_name=${encodedTheaterName}&movie_name=${encodedMovieName}&day=${formattedDate}`
+          `http://http://${IPV4}:${PORT}/api/v1/movie/showtime/film?theater_name=${encodedTheaterName}&movie_name=${encodedMovieName}&day=${formattedDate}`
         );
         setShowtimes(res.data.showtimeList);
       
@@ -299,14 +303,19 @@ const styles = StyleSheet.create({
   contentContainer:{
     flexWrap: 'wrap',
     flexDirection: 'row',
-    marginVertical: SPACING.space_12
+    marginVertical: SPACING.space_12,
+    // justifyContent: 'center',
+    // alignContent:'center',
+    width: screenWidth*0.9,
+    alignSelf: 'center'
 
   },
   showtimeContainer:{
     backgroundColor: COLORS.White,
     height: screenWidth * 0.25,
     width: screenWidth * 0.25,
-    marginHorizontal: SPACING.space_15,
+    marginHorizontal: SPACING.space_10,
+    marginVertical: SPACING.space_10,
     borderRadius: SPACING.space_15,
     paddingHorizontal: SPACING.space_10,
     paddingVertical: SPACING.space_10

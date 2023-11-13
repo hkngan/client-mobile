@@ -6,7 +6,11 @@ import { SPACING, FONTSIZE, COLORS } from '../themes/theme'
 import { Heading } from '../components'
 import { useNavigation } from '@react-navigation/native'
 import axios from 'axios'
+import config from '../../config'
 const SignupScreen = () => {
+  const IPV4 = config.extra.IPV4
+  const PORT = config.extra.PORT
+
   const navigation = useNavigation()
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
@@ -19,7 +23,7 @@ const SignupScreen = () => {
         Alert.alert('Please enter all fields')
         return;
       }
-      const {data} = await axios.post('http://10.13.129.12:3001/api/v1/user/user-signup', {
+      const {data} = await axios.post(`http://${IPV4}:${PORT}/api/v1/user/user-signup`, {
         
         name,
         phone_number,

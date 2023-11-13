@@ -20,6 +20,9 @@ import axios from "axios";
 import { BookingContext } from "../context/bookingContext";
 
 const MovieDetailScreen = ({ route }) => {
+  const IPV4 = config.extra.IPV4
+  const PORT = config.extra.PORT
+  
   const navigation = useNavigation();
   const [movieData, setMovieData] = useState([]);
 
@@ -29,7 +32,7 @@ const MovieDetailScreen = ({ route }) => {
     const getNMovieDetails = async () => {
       try {
         let res = await axios.get(
-          `http://10.13.129.12:3001/api/v1/movie/detail-nmovie/${id}`
+          `http://${IPV4}:${PORT}/api/v1/movie/detail-nmovie/${id}`
         );
         setMovieData(res.data.detailMovie);
       } catch (error) {
@@ -39,7 +42,7 @@ const MovieDetailScreen = ({ route }) => {
     const getUMovieDetails = async () => {
       try {
         let res = await axios.get(
-          `http://10.13.129.12:3001/api/v1/movie/detail-umovie/${id}`
+          `http://${IPV4}:${PORT}/api/v1/movie/detail-umovie/${id}`
         );
         setMovieData(res.data.detailMovie);
       } catch (error) {
@@ -92,7 +95,7 @@ const MovieDetailScreen = ({ route }) => {
         />
         <View style={styles.imgBackground}>
           <Image
-            source={{ uri: `http://10.13.129.12:3001/${updatedPath}` }}
+            source={{ uri: `http://${IPV4}:${PORT}/${updatedPath}` }}
             style={styles.imgMovie}
           />
         </View>
@@ -148,7 +151,7 @@ const MovieDetailScreen = ({ route }) => {
             onPress={() => {
               setMovie({
                 title: movieData.movie_name,
-                img: `http://10.13.129.12:3001/${updatedPath}`,
+                img: `http://${IPV4}:${PORT}/${updatedPath}`,
                 rate: movieData.rate
               });
               navigation.navigate("SelectTheaterStack");
