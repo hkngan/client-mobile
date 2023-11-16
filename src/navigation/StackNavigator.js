@@ -2,7 +2,7 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import TabNavigator from './TabNaviagtor'
 import {createStackNavigator} from '@react-navigation/stack'
-import { LoginScreen, SignupScreen, GetPasswordScreen, MovieDetailScreen, SelectShowtime, SelectTheaterScreen, OrderScreen, SelectSeatScreen, SelectCombo } from '../screens'
+import { LoginScreen, SignupScreen, GetPasswordScreen, MovieDetailScreen, SelectShowtime, SelectTheaterScreen, OrderScreen, SelectSeatScreen, SelectCombo, TicketDetail } from '../screens'
 const Stack = createStackNavigator()
 const StackNavigator = () => {
   return (
@@ -17,6 +17,7 @@ const StackNavigator = () => {
         <Stack.Screen name='SelectSeatStack' component={SelectSeatScreen} options={{headerShown: false}}/>
         <Stack.Screen name='SelectComboStack' component={SelectCombo} options={{headerShown: false}}/>
         <Stack.Screen name='OrderScreenStack' component={OrderScreen} options={{headerShown: false}}/>
+        <Stack.Screen name='TicketDetail' component={TicketDetail} options={{headerShown: false}}/>
     </Stack.Navigator>
   )
 }

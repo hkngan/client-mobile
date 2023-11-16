@@ -21,7 +21,7 @@ const SelectTheaterScreen = ({route}) => {
   useEffect(() => {
     const getCity = async () => {
       try {
-        let response = await axios.get(`http://http://${IPV4}:${PORT}/api/v1/admin/city-list`);
+        let response = await axios.get(`http://${IPV4}:${PORT}/api/v1/admin/city-list`);
         setCityData(response.data.cityList);
       } catch (error) {
         console.log("Error in getCity func", error);
@@ -31,7 +31,7 @@ const SelectTheaterScreen = ({route}) => {
     const getTheater = async (cityId) => {
       try {
         if (cityId) {
-          let response = await axios.get(`http://http://${IPV4}:${PORT}/api/v1/admin/sort-theater/${cityId}`);
+          let response = await axios.get(`http://${IPV4}:${PORT}/api/v1/admin/sort-theater/${cityId}`);
           setTheaterData(response.data.theaterList);  
         } else {
           console.log('cityId is null or empty');

@@ -1,5 +1,4 @@
 import HomeScreen from "./HomeScreen";
-import SearchScreen from "./SearchScreen";
 import ProfileScreen from "./ProfileScreen";
 import TicketScreen from "./TicketScreen";
 import MovieDetailScreen from "./MovieDetailScreen";
@@ -11,6 +10,7 @@ import SelectTheaterScreen from "./SelectTheaterScreen";
 import OrderScreen from "./OrderScreen";
 import SelectSeatScreen from "./SelectSeatScreen";
 import SelectCombo from "./SelectCombo";
+import TicketDetail from "./TicketDetail";
 export {
     LoginScreen,
     SignupScreen,
@@ -23,5 +23,6 @@ export {
     SelectTheaterScreen, 
     OrderScreen,
     SelectSeatScreen,
-    SelectCombo
+    SelectCombo,
+    TicketDetail
 }

@@ -18,6 +18,7 @@ import { useNavigation } from "@react-navigation/native";
 import { WebView } from "react-native-webview";
 import axios from "axios";
 import { BookingContext } from "../context/bookingContext";
+import config from "../../config";
 
 const MovieDetailScreen = ({ route }) => {
   const IPV4 = config.extra.IPV4

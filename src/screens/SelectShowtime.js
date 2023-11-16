@@ -58,7 +58,7 @@ useEffect(() => {
         const encodedMovieName = encodeURIComponent(title);
         const encodedTheaterName = encodeURIComponent(theater_name);
         let res = await axios.get(
-          `http://http://${IPV4}:${PORT}/api/v1/movie/showtime/film?theater_name=${encodedTheaterName}&movie_name=${encodedMovieName}&day=${formattedDate}`
+          `http://${IPV4}:${PORT}/api/v1/movie/showtime/film?theater_name=${encodedTheaterName}&movie_name=${encodedMovieName}&day=${formattedDate}`
         );
         setShowtimes(res.data.showtimeList);
       

@@ -29,10 +29,11 @@ const LoginScreen = () => {
   };
   const IPV4 = config.extra.IPV4
   const PORT = config.extra.PORT
-  // const [state, setState] = useContext(AuthContext)
   const authContext = useContext(AuthContext)
   const state = authContext.state
   const setState = authContext.setState
+  const {token} = state
+  console.log("token: ", token)
   const [phone_number, setPhoneNumber]= useState('')
   const [password, setPassword] = useState('')
 

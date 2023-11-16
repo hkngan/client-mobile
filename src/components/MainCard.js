@@ -16,7 +16,8 @@ const MainCard = ({
   navigate,
   time,
   date,
-  genre
+  genre,
+  id
 }) => {
   const navigation = useNavigation()
   const { setMovie } = useContext(BookingContext);
@@ -36,7 +37,7 @@ const MainCard = ({
         { maxWidth: cardWidth },
       ]}
     >
-      <TouchableOpacity onPress={navigate} style={{}}>
+      <TouchableOpacity onPress={navigate}>
         <View>
           <Image
             style={[styles.img, { width: cardWidth, height: 300 }]}
@@ -83,6 +84,7 @@ const MainCard = ({
               setMovie({
                 title: title,
                 img: imagePath,
+                id: id
               });
               navigation.navigate("SelectTheaterStack");
             }}

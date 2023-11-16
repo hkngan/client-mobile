@@ -19,6 +19,7 @@ import { image } from "../constant";
 import axios from "axios";
 import { BookingContext } from "../context/bookingContext";
 import config from "../../config";
+import { AuthContext } from "../context/authContext";
 const HomeScreen = () => {
   const navigation = useNavigation();
 
@@ -26,6 +27,9 @@ const HomeScreen = () => {
   const [upComingMovieList, setUpComingMovieList] = useState([]);
 
   const { setMovie } = useContext(BookingContext);
+  const {state} = useContext(AuthContext)
+  const {token} = state
+  console.log("token: ", token)
   const IPV4 = config.extra.IPV4
   const PORT = config.extra.PORT
   useEffect(() => {
@@ -134,6 +138,7 @@ const HomeScreen = () => {
                 date={item.start_date}
                 imagePath={`http://${IPV4}:${PORT}/${updatedPath}`}
                 genre={item.genres}
+                id={item._id}
               />
             );
           }}

@@ -4,6 +4,7 @@ import MovieCard from "./MovieCard";
 import MainCard from "./MainCard";
 import Heading from "./Heading";
 import CastBox from "./CastBox";
+import CustomAlert from "./CustomAlert";
 export {
     SearchBox,
     Title,
@@ -11,4 +12,5 @@ export {
     MainCard,
     Heading,
     CastBox,
+    CustomAlert
 }

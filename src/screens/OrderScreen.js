@@ -7,6 +7,7 @@ import {
   View,
   Dimensions,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import { COLORS, FONTSIZE, SPACING } from "../themes/theme";
@@ -14,28 +15,93 @@ import { Heading } from "../components";
 import { BookingContext } from "../context/bookingContext";
 import { image } from "../constant";
 import config from "../../config";
-
+import axios from "axios";
+import { AuthContext } from "../context/authContext";
+import { useStripe } from "@stripe/stripe-react-native";
+import { useNavigation } from "@react-navigation/native";
 const OrderScreen = ({ route }) => {
   const IPV4 = config.extra.IPV4
   const PORT = config.extra.PORT
-
+  const stripe = useStripe()
+  const navigation = useNavigation()
   const [selectedPayment, setSelectedPayment] = useState(null);
-
   const { movie, selectedTheater, selectedShowtime, amount, selectedCombos } =
     useContext(BookingContext);
-  const { img, title } = movie;
+  const {state} = useContext(AuthContext)
+  const {user} = state
+  // console.log('payment screen',user._id)
+  const { img, title, id } = movie;
   const { theater_name } = selectedTheater;
   const { room, time, date } = selectedShowtime;
   const { seat, sotien } = amount;
-  const { img_combo, combo_name, quantity, gia_combo } =
-    selectedCombos;
-    console.log(selectedCombos);
+  const { img_combo, combo_name, quantity, gia_combo } = selectedCombos;
 
   const updatedPath = img_combo ? img_combo.replace(/\\/g, "/") : null;
 
   const totalCombo = parseInt(quantity * gia_combo);
   const totalPrice =
     totalCombo && sotien ? parseInt(sotien + totalCombo) : parseInt(sotien);
+    const url = img 
+    // console.log(url)
+    const parts = url.split("/")
+    // console.log(parts)
+    const imagePath = parts.slice(3).join("/")
+    // console.log(id)
+const handlePayment = async () => {
+  try {
+    const orderData = {
+      itemInfo: { 
+        name: movie.title,
+        price: amount.sotien,
+        img: imagePath,
+        seat: amount.seat,
+        movie: movie.id
+      },
+      combo: selectedCombos.quantity > 0 ? {
+        name: selectedCombos.combo_name,
+        price: selectedCombos.gia_combo,
+        quantity: selectedCombos.quantity,
+        img: selectedCombos.img_combo
+      } : null,
+      theater: selectedTheater.theater_name,
+      room: selectedShowtime.room,
+      date_start: selectedShowtime.date,
+      time: selectedShowtime.time,
+      totalAmount: totalPrice,
+      user: user._id,
+    };
+
+    const response = await axios.post(`http://${IPV4}:${PORT}/api/v1/user/order`, orderData);
+
+    if (response.data) {
+      const { clientSecret } = response.data;
+
+      const initSheet = await stripe.initPaymentSheet({
+        paymentIntentClientSecret: clientSecret,
+      });
+      if (initSheet.error) {
+        Alert.alert(initSheet.error.message);
+        return;
+      }
+
+      const presentSheet = await stripe.presentPaymentSheet({
+        clientSecret,
+      });
+      if (presentSheet.error) {
+        Alert.alert(presentSheet.error.message);
+        return;
+      }
+      navigation.navigate('TabStack', {screen: 'TicketTab'})
+    } else {
+      // Handle no data scenario
+      Alert.alert("No data received from payment initiation");
+    }
+
+  } catch (err) {
+    console.error('Error in handlePayment function', err);
+    Alert.alert("Something went wrong, try again later!");
+  }
+};
 
   return (
     <SafeAreaView style={styles.container}>
@@ -72,28 +138,7 @@ const OrderScreen = ({ route }) => {
           </View>
         ): null}
         <View style={styles.paymentContainer}>
-            <Text style={styles.titleText}>Phương thức thanh toán</Text>
-            <TouchableOpacity   
-                onPress={() => setSelectedPayment(selectedPayment === 'momo' ? null : 'momo')}
-                style={[styles.paymentButton, selectedPayment === 'momo' && styles.selectedPaymentButton]}>
-              <Image source={image.momo} style={styles.logo} resizeMode='stretch' />
-              <Text style={styles.paymentText}>Momo</Text>
-            </TouchableOpacity>
-            <View style={styles.line} />
-            <TouchableOpacity   
-                onPress={() => setSelectedPayment(selectedPayment === 'zalo' ? null : 'zalo')}
-                style={[styles.paymentButton, selectedPayment === 'zalo' && styles.selectedPaymentButton]}>
-              <Image source={image.zalo} style={styles.logo} resizeMode='stretch' />
-              <Text style={styles.paymentText}>Zalo</Text>
-            </TouchableOpacity>
-            <View style={styles.line} />
-            <TouchableOpacity
-              onPress={() => setSelectedPayment(selectedPayment === 'paypal' ? null : 'paypal')}
-              style={[styles.paymentButton, selectedPayment === 'paypal' && styles.selectedPaymentButton]}>
-              <Image source={image.paypal} style={styles.logo} resizeMode='stretch' />
-              <Text style={styles.paymentText}>Paypal</Text>
-            </TouchableOpacity>
-            <View style={styles.line} />
+            <Text style={styles.titleText}>Chọn phương thức thanh toán:</Text>
             <TouchableOpacity
               onPress={() => setSelectedPayment(selectedPayment === 'visa' ? null : 'visa')}
               style={[styles.paymentButton, selectedPayment === 'visa' && styles.selectedPaymentButton]}>
@@ -107,7 +152,7 @@ const OrderScreen = ({ route }) => {
         <View>
           <Text style={styles.totalText}>Tổng tiền: {totalPrice} </Text>
         </View>
-        <TouchableOpacity style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.buttonContainer} onPress={handlePayment}>
           <Text style={styles.buttonText}>Thanh toán</Text>
         </TouchableOpacity>
 
@@ -210,8 +255,8 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   paymentContainer:{
-    paddingHorizontal: SPACING.space_10,
-    paddingVertical: SPACING.space_10,
+    paddingHorizontal: SPACING.space_15,
+    paddingVertical: SPACING.space_15,
 
   },
   paymentButton:{
