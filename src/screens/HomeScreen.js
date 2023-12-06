@@ -97,7 +97,7 @@ const HomeScreen = () => {
             elevation: 20
           }}>CINEMAGIC</Text>
         </View>
-        <Title title="Đang chiếu" />
+        <Title title="Now showing" />
         <FlatList
           data={nowPlayingMovieList}
           keyExtractor={(item) => item._id.toString()}
@@ -144,7 +144,7 @@ const HomeScreen = () => {
           }}
         />
 
-        <Title title="Sắp chiếu" />
+        <Title title="Coming soon" />
         <FlatList
           data={upComingMovieList}
           keyExtractor={(item) => item._id.toString()}

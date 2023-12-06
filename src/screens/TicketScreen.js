@@ -1,7 +1,8 @@
 import { View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Image } from 'react-native'
 import React, {useContext, useEffect, useState} from 'react'
 import { COLORS, FONTSIZE, SPACING } from '../themes/theme'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useIsFocused } from '@react-navigation/native'
+import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios'
 import config from '../../config'
 import { AuthContext } from '../context/authContext'
@@ -12,29 +13,35 @@ const TicketScreen = () => {
   const {state} = useContext(AuthContext)
   const {user} = state
   const id= user._id
-  console.log("id",id)
+  // console.log("id",id)
   const [ticketData, setTicketData] = useState([])
+  const isFocused = useIsFocused();
 
   useEffect(() => {
+    if (isFocused) {
     const getData = async () => {
       try {
         const response = await axios.get(`http://${IPV4}:${PORT}/api/v1/user/ticket-list/${id}`)
-        setTicketData(response.data.tickets)
+        const data = response.data.tickets
+        console.log(data)
+        setTicketData(data)
+        
       } catch (error) {
         console.error("Error in getData in TicketScreen", error)
       }
     }
     getData()
-  },[])
+   }
+  },[isFocused])
   // console.log(ticketData)
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.headerText}>Vé vào rạp</Text>
       <ScrollView >
-        {ticketData.map((ticket) =>{
+        {ticketData.length > 0 ? (ticketData.map((ticket) =>{
           const imagePath = ticket.itemInfo.img
           return (
-            <TouchableOpacity key={ticket._id} style={styles.ticketContainer} onPress={() => navigation.navigate('TicketDetail')}>
+            <TouchableOpacity key={ticket._id} style={styles.ticketContainer}>
               <Image source={{uri: `http://${IPV4}:${PORT}/${imagePath}`}} style={styles.img} resizeMode='stretch' />
               <View style={styles.content}>
                 <Text style={styles.textTitle}>{ticket.itemInfo.name}</Text>
@@ -56,7 +63,16 @@ const TicketScreen = () => {
           ></View>
             </TouchableOpacity>
           )
-        })}
+        })) : (
+          <View style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            alignSelf: 'center'
+          }}>
+            <Ionicons name="cart" size={24} color={COLORS.White} />
+            <Text style={styles.emtyText}>Your ticket list is empty</Text>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -77,6 +93,14 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     alignSelf: 'center',
     marginVertical: SPACING.space_10
+  },
+  emtyText:{
+    color: COLORS.White,
+    fontSize: FONTSIZE.size_16,
+    textTransform: 'capitalize',
+    alignSelf: 'center',
+    marginVertical: SPACING.space_36 * 2,
+    textAlign:'center'
   },
   ticketContainer:{
     width: WIDTH*0.85,

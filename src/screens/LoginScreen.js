@@ -7,7 +7,8 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
-  Alert,
+  Dimensions,
+  Modal
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState, useContext } from "react";
@@ -33,16 +34,23 @@ const LoginScreen = () => {
   const state = authContext.state
   const setState = authContext.setState
   const {token} = state
-  console.log("token: ", token)
+  // console.log("token: ", token)
   const [phone_number, setPhoneNumber]= useState('')
   const [password, setPassword] = useState('')
+  const [isAlertVisible, setAlertVisible] = useState(false);
 
+  const showAlert = () => {
+    setAlertVisible(true);
+  }
+
+  const hideAlert = () => {
+    setAlertVisible(false);
+  }
   const handleLogin = async () => {
     try {
         const apiUrl = `http://${IPV4}:${PORT}/api/v1/user/user-login`
-
-        if (!phone_number || !password) {
-          Alert.alert('Please enter all fields');
+        if (phone_number === ''|| password === '')  {
+          showAlert()
           return;
         }
         const { data } = await axios.post(apiUrl, {
@@ -54,7 +62,6 @@ const LoginScreen = () => {
         navigation.navigate('TabStack');
     } catch (error) {
       console.error(error);
-      alert('An error occurred while logging in. Please try again.');
     }
   };
   const getData = async () => {
@@ -80,6 +87,7 @@ const LoginScreen = () => {
             placeholderTextColor={COLORS.WhiteRGBA75}
             style={styles.Inputcontainer}
             value={phone_number}
+            keyboardType="numeric"
             onChangeText={(text) => setPhoneNumber(text)}
           ></TextInput>
           <TextInput
@@ -107,12 +115,29 @@ const LoginScreen = () => {
             <Text style={styles.txtSignup}>create membership account</Text>
           </TouchableOpacity>
         </View>
+        <Modal
+            visible={isAlertVisible}
+            transparent={true}
+            animationType="slide" >
+            <View style={styles.customAlertContainer}>
+              <View style={styles.alertBox}>                
+                  <Text style={styles.contentAlert}>
+                      Please enter all fields!
+                  </Text>
+
+                    <TouchableOpacity style={styles.cancelButton} onPress={hideAlert}>
+                        <Text style={{textAlign:'center', fontWeight: 'bold', color: COLORS.Red}}>OK</Text>
+                    </TouchableOpacity>
+                </View>
+              </View>
+          </Modal> 
       </SafeAreaView>
     </ScrollView>
   );
 };
 
 export default LoginScreen;
+const screenWidth = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   container: {
@@ -197,5 +222,47 @@ const styles = StyleSheet.create({
     color: COLORS.WhiteRGBA75,
     fontSize: FONTSIZE.size_16,
     textTransform: "capitalize",
+  },
+  customAlertContainer:{
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center',
+    backgroundColor: COLORS.Grey
+  },
+  alertBox:{ 
+    backgroundColor: 'white', 
+    padding: 20, 
+    borderRadius: 10, 
+    width: 300,
+    justifyContent: 'center', 
+    alignItems: 'center',
+  },
+  titleAlert:{
+    color: COLORS.Black,
+    fontWeight: 'bold',
+    fontSize: FONTSIZE.size_20,
+    textAlign: 'center',
+    textTransform: 'uppercase',
+    marginVertical: SPACING.space_10
+  },
+  redText:{
+    color: COLORS.Red,
+    textTransform: 'capitalize'
+  },
+  btnContainer:{
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  },
+  cancelButton:{
+    borderColor: COLORS.Red,
+    borderWidth: 1,
+    borderRadius: SPACING.space_10,
+    width: screenWidth*0.25,
+    height: 30,
+    paddingHorizontal: SPACING.space_18,
+    marginHorizontal: SPACING.space_10,
+    marginVertical: SPACING.space_15,
+    alignItem: 'center',
+    justifyContent: 'center'
   },
 });

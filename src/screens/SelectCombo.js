@@ -53,7 +53,7 @@ const SelectCombo = ({route}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-            <Heading header={'Chọn combo'}/>
+            <Heading header={'Choose Combo'}/>
     <ScrollView >
       <View>
       {comboData.map((combo, index) => {
@@ -82,21 +82,20 @@ const SelectCombo = ({route}) => {
               
             )
         })}
-
       </View>
     </ScrollView>
     <View style={[styles.totalContainer, styles.shadow]}>
               <View>
-                <Text style={styles.selectedSeat}>Ghế: {seat ? seat.join(', ') : ''}</Text>
+                <Text style={styles.selectedSeat}>Seat: {seat ? seat.join(', ') : ''}</Text>
                 {selectedCombo && selectedComboCount > 0 ? (
                 <View>
                   <Text style={styles.selectedSeat}>{selectedComboCount}x Combo</Text>
-                  <Text style={styles.priceText}>Tổng cộng: {totalPrice}  </Text>
+                  <Text style={styles.priceText}>Total: {totalPrice}  </Text>
                   
                 </View>
                 ): (
                 <View>
-                  <Text style={styles.priceText}>Tổng cộng: {totalPrice } </Text>
+                  <Text style={styles.priceText}>Total: {totalPrice } </Text>
                 </View>
                 )}
               </View>
@@ -113,7 +112,7 @@ const SelectCombo = ({route}) => {
                  navigation.navigate('OrderScreenStack')
                 }}
               >
-                <Text style={styles.buttonText}>Tiếp tục</Text>
+                <Text style={styles.buttonText}>Continue</Text>
               </TouchableOpacity>
             </View>
       </SafeAreaView>
@@ -132,7 +131,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.White,
     alignSelf: 'center',
     marginHorizontal: SPACING.space_10,
-    marginVertical: SPACING.space_10,
+    marginVertical: 5,
     borderRadius: SPACING.space_10,
     paddingVertical: SPACING.space_10
   },
@@ -180,13 +179,15 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.White,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
+    alignItems: 'center',
     width: screenWidth,
     height: screenWidth*0.2,
     alignSelf: 'center',
-    marginVertical: SPACING.space_10,
-    paddingVertical: SPACING.space_10,
     position: 'absolute',
-    bottom: 0
+    paddingTop: 5,
+    bottom: 0,
+    borderTopLeftRadius: SPACING.space_15,
+    borderTopRightRadius: SPACING.space_15
   },
   buttonContainer: {
     backgroundColor: COLORS.Red,
@@ -194,12 +195,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
-    height: 35,
+    height: 50,
     borderRadius: SPACING.space_12
   },
   buttonText: {
     color: COLORS.White,
-    fontSize: FONTSIZE.size_16
+    fontSize: FONTSIZE.size_18
   },
   selectedSeat:{
     color: COLORS.Black,

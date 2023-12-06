@@ -82,26 +82,26 @@ const SelectSeatScreen = ({route}) => {
             <Heading header={`${title} | (${time})`}/>
             <View style={styles.seatContainer}>
                 <View style={styles.screenContainer}>
-                    <Text style={styles.screenText}>Màn hình</Text>
+                    <Text style={styles.screenText}>Screen</Text>
                     <View style={styles.screen}/>
                 </View>
                 {generateSeats(route)}
                 <View style={styles.infoSeatContainer}>
                   <View style={styles.infoSeatBox}>
                       <View style={styles.defaultSeat}/>
-                      <Text style={styles.infoText}>Ghế tiêu chuẩn</Text>
+                      <Text style={styles.infoText}>Standard</Text>
                   </View>
                   <View style={styles.infoSeatBox}>
                       <View style={styles.selectingSeat}/>
-                      <Text style={styles.infoText}>Ghế đang chọn</Text>
+                      <Text style={styles.infoText}>Selecting</Text>
                   </View>
                   <View style={styles.infoSeatBox}>
                       <View style={styles.bookedSeat}/>
-                      <Text style={styles.infoText}>Ghế đã đặt</Text>
+                      <Text style={styles.infoText}>Booked</Text>
                   </View> 
                   <View style={styles.infoSeatBox}>
                       <View style={styles.vipSeat}/>
-                      <Text style={styles.infoText}>Ghế VIP</Text>
+                      <Text style={styles.infoText}>VIP</Text>
                   </View>
                 </View>
                 
@@ -109,8 +109,8 @@ const SelectSeatScreen = ({route}) => {
             {selectedSeat.length > 0 ? (
               <View style={styles.priceContainer}>
               <View>
-                <Text style={styles.selectedSeat}>Ghế: {selectedSeat.join(', ')}</Text>
-                <Text style={styles.priceText}>Tạm tính: {total}</Text>
+                <Text style={styles.selectedSeat}>Seat: {selectedSeat.join(', ')}</Text>
+                <Text style={styles.priceText}>Total: {total}</Text>
               </View>
               <TouchableOpacity 
                 style={styles.buttonContainer}
@@ -122,7 +122,7 @@ const SelectSeatScreen = ({route}) => {
                   navigation.navigate('SelectComboStack')
                 }}
               >
-                <Text style={styles.buttonText}>Tiếp tục</Text>
+                <Text style={styles.buttonText}>Continue</Text>
               </TouchableOpacity>
             </View>
             ) : null}
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
         height: 30, 
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: COLORS.WhiteRGBA32,
+        backgroundColor: COLORS.WhiteRGBA75,
       },
       selectingSeat: {
         width: 30, 

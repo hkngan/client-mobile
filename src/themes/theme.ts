@@ -38,6 +38,7 @@ interface Spacing {
     Red: string;
     RedRGBA0: string;
     Grey: string;
+    Grey1: string;
     DarkGrey: string;
     Yellow: string;
     Yellow2: string;
@@ -54,7 +55,8 @@ interface Spacing {
     BlackRGB10: 'rgba(0,0,0,0.6)',
     Red: '#FE0000',
     RedRGBA0: 'rgba(208, 21, 34, 0.8)',
-    Grey: 'rgba(70, 70, 70, 0.4)',
+    Grey: 'rgba(70, 70, 70, 1)',
+    Grey1: 'rgba(70, 70, 70, 0.5)',
     DarkGrey: '#0b0b0b',
     Yellow: 'rgba(255, 162, 0, 0.2)',
     Yellow2: 'rgba(255, 162, 0, 0.9)',

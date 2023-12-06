@@ -57,7 +57,7 @@ const SelectTheaterScreen = ({route}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Heading header={"Chọn rạp"} />
+      <Heading header={"Choose Theater"} />
       <View style={styles.wrapper}>
           <View style={styles.cityContainer}>
             {cityData.map((city) => {
@@ -103,7 +103,7 @@ const SelectTheaterScreen = ({route}) => {
               navigation.navigate('BookingSeatStack')
             }}
           > 
-            <Text style={[styles.buttonText, {textAlign: 'center', textTransform: 'uppercase', fontWeight: 'bold', color: COLORS.White}]}>Tiếp tục</Text>
+            <Text style={[styles.buttonText, {textAlign: 'center', textTransform: 'uppercase', fontWeight: 'bold', color: COLORS.White}]}>Continue</Text>
           </TouchableOpacity>
         ) : null}
     </SafeAreaView>

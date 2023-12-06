@@ -77,6 +77,7 @@ const handlePayment = async () => {
       const { clientSecret } = response.data;
 
       const initSheet = await stripe.initPaymentSheet({
+        merchantDisplayName: "Cinemagic Theater",
         paymentIntentClientSecret: clientSecret,
       });
       if (initSheet.error) {
@@ -86,6 +87,7 @@ const handlePayment = async () => {
 
       const presentSheet = await stripe.presentPaymentSheet({
         clientSecret,
+
       });
       if (presentSheet.error) {
         Alert.alert(presentSheet.error.message);
@@ -93,7 +95,6 @@ const handlePayment = async () => {
       }
       navigation.navigate('TabStack', {screen: 'TicketTab'})
     } else {
-      // Handle no data scenario
       Alert.alert("No data received from payment initiation");
     }
 
@@ -105,7 +106,7 @@ const handlePayment = async () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Heading header={"Xác nhận"} />
+      <Heading header={"Payment"} />
       <ScrollView>
         <View style={styles.infoMovieContainer}>
           <Image source={{ uri: img }} style={styles.poster} />
@@ -116,7 +117,7 @@ const handlePayment = async () => {
             <Text style={styles.redText}>
               {theater_name}
             </Text>
-            <Text style={styles.redText}>Ghế: {seat ? seat.join(", ") : ""} ({room})</Text>
+            <Text style={styles.redText}>Seat: {seat ? seat.join(", ") : ""} ({room})</Text>
             <Text style={styles.redText}>{sotien} đ</Text>
           </View>
         </View>
@@ -130,7 +131,7 @@ const handlePayment = async () => {
               />
               <View style={styles.infoMovie}>
                 <Text style={styles.titleText}>{combo_name}</Text>
-                <Text style={styles.dateText}>Số lượng: {quantity}</Text>
+                <Text style={styles.dateText}>Amount: {quantity}</Text>
                 <Text style={styles.redText}>{totalCombo}</Text>
               </View>
             </View>
@@ -138,7 +139,7 @@ const handlePayment = async () => {
           </View>
         ): null}
         <View style={styles.paymentContainer}>
-            <Text style={styles.titleText}>Chọn phương thức thanh toán:</Text>
+            <Text style={styles.titleText}>Payment method:</Text>
             <TouchableOpacity
               onPress={() => setSelectedPayment(selectedPayment === 'visa' ? null : 'visa')}
               style={[styles.paymentButton, selectedPayment === 'visa' && styles.selectedPaymentButton]}>
@@ -150,10 +151,10 @@ const handlePayment = async () => {
       </ScrollView>
       <View style={[styles.totalContainer, styles.shadow]}>
         <View>
-          <Text style={styles.totalText}>Tổng tiền: {totalPrice} </Text>
+          <Text style={styles.totalText}>Total: {totalPrice} </Text>
         </View>
         <TouchableOpacity style={styles.buttonContainer} onPress={handlePayment}>
-          <Text style={styles.buttonText}>Thanh toán</Text>
+          <Text style={styles.buttonText}>Pay</Text>
         </TouchableOpacity>
 
       </View>

@@ -2,12 +2,12 @@ import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 import {
   HomeScreen,
-  SearchScreen,
+  Chat,
   TicketScreen,
   ProfileScreen,
 } from "../screens";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { FontAwesome, Feather } from "@expo/vector-icons";
+import { FontAwesome, Feather, Entypo } from "@expo/vector-icons";
 import { COLORS, SPACING } from "../themes/theme";
 const Tab = createBottomTabNavigator();
 const TabNavigator = () => {
@@ -19,7 +19,7 @@ const TabNavigator = () => {
         tabBarStyle: {
           backgroundColor: COLORS.Black,
           borderTopWidth: 0,
-          height: SPACING.space_10 * 12,
+          height: SPACING.space_10 * 9,
         },
       }}
     >
@@ -42,9 +42,9 @@ const TabNavigator = () => {
           },
         }}
       />
-      {/* <Tab.Screen
+      <Tab.Screen
         name="SearchTab"
-        component={SearchScreen}
+        component={Chat}
         options={{
           tabBarShowLabel: false,
           tabBarIcon: ({ focused }) => {
@@ -55,12 +55,12 @@ const TabNavigator = () => {
                   focused ? { backgroundColor: COLORS.RedRGBA0 } : {},
                 ]}
               >
-                <Feather name="search" color={COLORS.White} size={25} />
+                <Entypo name="message" color={COLORS.White} size={25} />
               </View>
             );
           },
         }}
-      /> */}
+      />
       <Tab.Screen
         name="TicketTab"
         component={TicketScreen}

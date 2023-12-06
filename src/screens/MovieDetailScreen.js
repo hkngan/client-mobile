@@ -130,8 +130,8 @@ const MovieDetailScreen = ({ route }) => {
           </View>
         </View>
         <View style={styles.infoContainer}>
-          <Text style={styles.gerneText}>Thể loại: {movieData?.genres}</Text>
-          <Text style={styles.descrText}>Mô tả: {movieData?.des}</Text>
+          <Text style={styles.gerneText}>Genre: {movieData?.genres}</Text>
+          <Text style={styles.descrText}>Description: {movieData?.des}</Text>
         </View>
         <Text
           style={[

@@ -1,12 +1,33 @@
 import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native'
-import React, {useContext} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import { COLORS, FONTSIZE, SPACING } from '../themes/theme'
-import { image } from '../constant'
 import { AuthContext } from '../context/authContext'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useIsFocused } from '@react-navigation/native'
+import { FontAwesome, MaterialIcons  } from '@expo/vector-icons'
+import axios from 'axios'
+import config from '../../config'
 const ProfileScreen = () => {
+  const IPV4 = config.extra.IPV4
+  const PORT = config.extra.PORT
   const navigation = useNavigation()
-  const {logout} = useContext(AuthContext)
+  const isFocused = useIsFocused()
+  const {logout, state} = useContext(AuthContext)
+  const [userData, setUserData]=useState([])
+  useEffect(() => {
+    if(isFocused){
+      const getUserData = async () => {
+        try {
+          const id = state.user._id
+          const response = await axios.get(`http://${IPV4}:${PORT}/api/v1/user/user-info/${id}`)
+          setUserData(response.data.info)
+        } catch (error) {
+          console.error('Error in getUserData function', error)
+        }
+      }
+      getUserData()
+    }
+  }, [isFocused]);
+  
   const handleLogout = () => {
     try {
       logout()
@@ -17,15 +38,24 @@ const ProfileScreen = () => {
   }
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity style={styles.avatarContainer}>
-        <Image source={image.avatar} style={styles.avatar}/>
-      </TouchableOpacity>
-      <Text style={styles.text}>Kim Ngan</Text>
+      <Text style={styles.headerText}>ACCOUNT</Text>
+      <View style={styles.profileContainer}>
+        <View style={styles.avatarContainer}>
+          <FontAwesome name="user" size={40} color={COLORS.White} />
+        </View>
+        <View>
+          <Text style={styles.text}>{userData.name}</Text>
+          <TouchableOpacity style={styles.editContainer} onPress={()=>navigation.navigate('EditProfileScreen')}>
+            <MaterialIcons name="edit" color={COLORS.Yellow2} size={20} />
+            <Text style={styles.text1}>Information</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.buttonText}>logout</Text>
       </TouchableOpacity>
     </SafeAreaView>
-  )
+  );
 }
 
 export default ProfileScreen
@@ -34,17 +64,36 @@ const styles = StyleSheet.create({
   container:{
     backgroundColor: COLORS.Black,
     flex: 1,
+
+  },
+  headerText:{
+    color: COLORS.White,
+    fontSize: FONTSIZE.size_20,
+    textTransform: 'uppercase',
+    alignSelf: 'center',
+    marginVertical: SPACING.space_10
+  },
+  profileContainer:{
+    top: 0,
+    left: 0,
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'flex-start'
   },
   text:{
     color: COLORS.White,
     fontSize: FONTSIZE.size_20,
-    fontStyle: 'italic',
     fontWeight: 'bold'
   },
   avatarContainer:{
-    marginVertical: SPACING.space_10
+    width: WIDTH*0.15,
+    height: WIDTH*0.15,
+    backgroundColor: COLORS.Grey,
+    borderRadius: SPACING.space_36*2,
+    marginVertical: SPACING.space_15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: SPACING.space_15,
   },
   avatar:{
     width: WIDTH*0.4,
@@ -54,14 +103,28 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.RedRGBA0,
     width: WIDTH*0.7,
     height: WIDTH*0.1,
+    alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: SPACING.space_10,
-    borderRadius: SPACING.space_15
+    marginVertical: SPACING.space_40*4,
+    borderRadius: SPACING.space_15,
+    
   },
   buttonText:{
     color: COLORS.White,
     textTransform: 'uppercase',
     fontSize: FONTSIZE.size_18
+  },
+  editContainer:{
+    flexDirection: 'row',
+    // position: 'absolute',
+    // bottom: -20,
+    // marginVertical: SPACING.space_32,
+    // marginHorizontal: SPACING.space_28*3
+  },
+  text1:{
+    fontSize: FONTSIZE.size_14, 
+    color: COLORS.Yellow2,
+    marginLeft: SPACING.space_10-5
   }
 })

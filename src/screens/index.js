@@ -11,6 +11,9 @@ import OrderScreen from "./OrderScreen";
 import SelectSeatScreen from "./SelectSeatScreen";
 import SelectCombo from "./SelectCombo";
 import TicketDetail from "./TicketDetail";
+import Chat from "./Chat";
+import EditProfileScreen from "./EditProfileScreen";
+import ChangePassword from "./ChangePassword";
 export {
     LoginScreen,
     SignupScreen,
@@ -24,5 +27,8 @@ export {
     OrderScreen,
     SelectSeatScreen,
     SelectCombo,
-    TicketDetail
+    TicketDetail,
+    Chat,
+    EditProfileScreen,
+    ChangePassword
 }

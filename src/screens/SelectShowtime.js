@@ -155,7 +155,7 @@ useEffect(() => {
           </View>
           
         ) : (
-          <Text style={styles.noShowtimesText}>Chưa có lịch chiếu</Text>
+          <Text style={styles.noShowtimesText}>No showtime yet</Text>
         )}
         </View> 
 
@@ -167,19 +167,19 @@ useEffect(() => {
       >
         <View style={styles.customAlertContainer}>
           <View style={styles.alertBox}>
-            <Text style={styles.titleAlert}>thông báo</Text>
+            <Text style={styles.titleAlert}>Confirmation</Text>
             <Text style={styles.contentAlert}>
-              Rạp chiếu phim hiện tại bạn đang chọn là {theater_name}, suất: {selectedTime}, phòng chiếu:  {selectedRoom}
+            The current cinema you are choosing is {theater_name}, showtime at: {selectedTime} and at {selectedRoom}
             </Text>
             <Text style={styles.redText}>{rate}</Text>
             <View style={styles.btnContainer}>
             <TouchableOpacity style={styles.cancelButton} onPress={hideAlert}>
-                <Text style={{textAlign:'center', fontWeight: 'bold', color: COLORS.Red}}>Hủy</Text>
+                <Text style={{fontSize: FONTSIZE.size_16,textAlign:'center', fontWeight: 'bold', color: COLORS.Red}}>Camcel</Text>
               </TouchableOpacity>
               <TouchableOpacity 
                 style={styles.confirmButton} 
                 onPress={handleSubmit}>
-                <Text style={{textAlign:'center', fontWeight: 'bold', color: COLORS.White}}>Xác Nhận</Text>
+                <Text style={{fontSize: FONTSIZE.size_16, textAlign:'center', fontWeight: 'bold', color: COLORS.White}}>Confirm</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -235,6 +235,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.DarkGrey,
     alignItems: "center",
     justifyContent: "center",
+  },
+  contentAlert:{
+    fontSize: FONTSIZE.size_16
   },
   timeText: {
     fontSize: FONTSIZE.size_18,
@@ -330,13 +333,13 @@ const styles = StyleSheet.create({
     flex: 1, 
     justifyContent: 'center', 
     alignItems: 'center',
-    backgroundColor: COLORS.Grey
+    backgroundColor: COLORS.Grey1,
   },
   alertBox:{ 
     backgroundColor: 'white', 
     padding: 20, 
     borderRadius: 10, 
-    width: 300 
+    width: screenWidth*0.9 
   },
   titleAlert:{
     color: COLORS.Black,
