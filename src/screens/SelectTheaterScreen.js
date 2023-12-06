@@ -116,7 +116,8 @@ const screenWidth = Dimensions.get('window').width;
 const styles = StyleSheet.create({
   container:{
     backgroundColor: COLORS.Black,
-    flex: 1
+    flex: 1,
+    paddingTop: 40,
   },
   wrapper:{
     height: '100%',

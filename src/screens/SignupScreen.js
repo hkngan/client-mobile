@@ -1,4 +1,4 @@
-import { SafeAreaView, ScrollView, StyleSheet, Text, View, ImageBackground, TextInput, KeyboardAvoidingView, TouchableOpacity, Alert } from 'react-native'
+import { SafeAreaView, ScrollView, StyleSheet, Text, View, ImageBackground, TextInput, KeyboardAvoidingView, TouchableOpacity, Alert, Dimensions } from 'react-native'
 import React, { useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { image } from '../constant'
@@ -7,6 +7,7 @@ import { Heading } from '../components'
 import { useNavigation } from '@react-navigation/native'
 import axios from 'axios'
 import config from '../../config'
+import { FontAwesome } from '@expo/vector-icons'
 const SignupScreen = () => {
   const IPV4 = config.extra.IPV4
   const PORT = config.extra.PORT
@@ -16,7 +17,10 @@ const SignupScreen = () => {
   const [email, setEmail] = useState("")
   const [phone_number, setPhoneNumber] = useState("")
   const [password, setPassword] = useState("")
-
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
   const handleSubmit = async () => {
     try {
       if(!name || !email || !phone_number|| !password){
@@ -47,7 +51,8 @@ const SignupScreen = () => {
       <SafeAreaView>
         <KeyboardAvoidingView
           enabled
-          behavior={Platform.OS === 'ios' ? 'padding' : null }>
+          behavior={Platform.OS === "ios" ? "padding" : null}
+        >
           <ImageBackground source={image.photo3} style={styles.imgBackground}>
             <LinearGradient
               colors={[COLORS.BlackRGB10, COLORS.Black]}
@@ -83,15 +88,30 @@ const SignupScreen = () => {
               value={phone_number}
               onChangeText={(text) => setPhoneNumber(text)}
             />
-            <TextInput
-              placeholder="Password"
-              placeholderTextColor={COLORS.WhiteRGBA75}
-              style={styles.inputContainter}
-              secureTextEntry={true}
-              value={password}
-              onChangeText={(text) => setPassword(text)}
-            />
-            <TouchableOpacity style={styles.buttonContainer} onPress={handleSubmit}>
+            <View style={styles.password}>
+              <TextInput
+                style={styles.inputContainter}
+                placeholder="Enter your new password"
+                value={password}
+                secureTextEntry={!isPasswordVisible}
+                onChangeText={(text) => setPassword(text)}
+                placeholderTextColor={COLORS.WhiteRGBA75}
+              />
+              <TouchableOpacity
+                onPress={togglePasswordVisibility}
+                style={styles.iconEye}
+              >
+                <FontAwesome
+                  name={isPasswordVisible ? "eye" : "eye-slash"}
+                  size={20}
+                  color="#FFF"
+                />
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={handleSubmit}
+            >
               <Text style={styles.btnText}>Sign Up</Text>
             </TouchableOpacity>
           </View>
@@ -102,11 +122,13 @@ const SignupScreen = () => {
 }
 
 export default SignupScreen
+const screenWidth = Dimensions.get("window").width;
 
 const styles = StyleSheet.create({
   container:{
     backgroundColor: COLORS.Black,
-    flex: 1
+    flex: 1,
+    paddingTop: 40,
   },
   keyBoardContainer:{
     flex: 1
@@ -137,6 +159,7 @@ linearGradient: {
     
   },
   inputContainter: {
+    width: screenWidth*0.9,
     color: COLORS.White,
     fontSize: FONTSIZE.size_16,
     paddingHorizontal: SPACING.space_20,
@@ -162,4 +185,13 @@ linearGradient: {
     fontSize: FONTSIZE.size_18,
     textTransform: "uppercase",
   },
+  password:{
+    flexDirection: 'row',
+    alignItems: 'center'
+},
+  iconEye:{
+    position: 'absolute',
+    right: 40,
+    marginHorizontal: SPACING.space_16
+},
 })

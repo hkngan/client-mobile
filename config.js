@@ -1,6 +1,6 @@
 export default {
     extra: {
-        IPV4: '10.13.144.180',
+        IPV4: '192.168.1.7',
         PORT: 3001,
         STRIPE_API_KEY: 'pk_test_51O61F4IHYcvSwbRD2MOzyQDyIodOXokgq3xyTWKC5JiUOCBo5Gg6Xgg9KZC7JbrC17UICF5DUB3U5KpXQ7LZR1R700WJ0OOqc9',
         STRIPE_SECRET_KEY: 'sk_test_51O61F4IHYcvSwbRDZwa8UdYNO6rKHPSTuhaXLauoCRbRdujWGmFE1rDiXSVHbSYubWhR5USppjMndbnYOIqTvTHV00e94QeFW9'

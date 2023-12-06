@@ -46,8 +46,8 @@ const ProfileScreen = () => {
         <View>
           <Text style={styles.text}>{userData.name}</Text>
           <TouchableOpacity style={styles.editContainer} onPress={()=>navigation.navigate('EditProfileScreen')}>
-            <MaterialIcons name="edit" color={COLORS.Yellow2} size={20} />
             <Text style={styles.text1}>Information</Text>
+            <MaterialIcons name="edit" color={COLORS.Yellow2} size={20} />
           </TouchableOpacity>
         </View>
       </View>
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   container:{
     backgroundColor: COLORS.Black,
     flex: 1,
-
+    paddingTop: 40,
   },
   headerText:{
     color: COLORS.White,
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: SPACING.space_40*4,
+    marginVertical: SPACING.space_40,
     borderRadius: SPACING.space_15,
     
   },
@@ -125,6 +125,6 @@ const styles = StyleSheet.create({
   text1:{
     fontSize: FONTSIZE.size_14, 
     color: COLORS.Yellow2,
-    marginLeft: SPACING.space_10-5
+    marginRight: SPACING.space_10-5
   }
 })

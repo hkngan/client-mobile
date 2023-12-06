@@ -1,4 +1,4 @@
-import { Alert, Dimensions, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Modal, Dimensions, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { Heading } from '../components'
 import { COLORS, FONTSIZE, SPACING } from '../themes/theme'
@@ -16,6 +16,16 @@ const EditProfileScreen = () => {
 
     const [userData, setUserData]=useState([])
     const [name, setName] = useState(userData?.name)
+
+    const [isAlertVisible, setAlertVisible] = useState(false);
+
+    const showAlert = () => {
+      setAlertVisible(true);
+    }
+  
+    const hideAlert = () => {
+      setAlertVisible(false);
+    }
     useEffect(() => {
         if(isFocused){
           const getUserData = async () => {
@@ -38,7 +48,7 @@ const EditProfileScreen = () => {
             const response = await axios.put(`http://${IPV4}:${PORT}/api/v1/user/update-profile/${id}`,{
                 name: name
             })
-            Alert.alert('Update successfully!')
+            showAlert()
             console.log(response)
         } catch (error) {
             console.error('Error in handleUpdate func', error)
@@ -79,19 +89,42 @@ const EditProfileScreen = () => {
                 position: 'absolute',
                 bottom: 0,
                 borderRadius: SPACING.space_10
-              }}>
+              }}
+              onPress={handleUpdate}>
                 <Text style={{
                     color: COLORS.Red,
                     textTransform: 'uppercase',
                     fontSize: FONTSIZE.size_20,
                     fontWeight: 'bold'
                 }}
-                onPress={handleUpdate}
+                
                 >UPDATE</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('ChangePassword')}>
                 <Text style={styles.buttonText}>Change Password</Text>
             </TouchableOpacity>
+            <Modal
+            visible={isAlertVisible}
+            transparent={true}
+            animationType="slide"
+      >
+        <View style={styles.customAlertContainer}>
+          <View style={styles.alertBox}>
+            <Text style={styles.titleAlert}>UPDATED</Text>
+            <Text style={styles.contentAlert}>
+              Updated successfully.
+            </Text>
+            <View style={styles.btnContainer}>
+              <TouchableOpacity 
+                style={styles.confirmButton} 
+                onPress={hideAlert}
+               >
+                <Text style={{fontSize: FONTSIZE.size_16, textAlign:'center', fontWeight: 'bold', color: COLORS.White}}>OK</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal> 
     </SafeAreaView>
   )
 }
@@ -100,9 +133,10 @@ export default EditProfileScreen
 const WIDTH = Dimensions.get('window').width
 const styles = StyleSheet.create({
     container:{
-        backgroundColor: COLORS.Black,
-        flex: 1,
-        alignItems: 'center'
+      paddingTop: 40,
+      backgroundColor: COLORS.Black,
+      flex: 1,
+      alignItems: 'center'
     },
     textInputFalse:{
         width: WIDTH*0.8,
@@ -140,5 +174,59 @@ const styles = StyleSheet.create({
     buttonText:{
         color: COLORS.Red,
         fontSize: FONTSIZE.size_16
-    }
+    },
+    customAlertContainer:{
+      flex: 1, 
+      justifyContent: 'center', 
+      alignItems: 'center',
+      backgroundColor: COLORS.Grey1,
+    },
+    alertBox:{ 
+      backgroundColor: 'white', 
+      padding: 20, 
+      borderRadius: 10, 
+      width: WIDTH*0.7 ,
+      justifyContent: 'center', 
+      alignItems: 'center'
+    },
+    titleAlert:{
+      color: COLORS.Black,
+      fontWeight: 'bold',
+      fontSize: FONTSIZE.size_20,
+      textAlign: 'center',
+      textTransform: 'uppercase',
+      marginVertical: SPACING.space_10
+    },
+    contentAlert:{
+      color: COLORS.Black,
+      fontSize: FONTSIZE.size_16,
+      fontWeight: '600'
+    },
+    btnContainer:{
+      flexDirection: 'row',
+      justifyContent: 'space-around'
+    },
+    cancelButton:{
+      borderColor: COLORS.Red,
+      borderWidth: 1,
+      borderRadius: SPACING.space_10,
+      width: WIDTH*0.25,
+      height: 30,
+      paddingHorizontal: SPACING.space_18,
+      marginHorizontal: SPACING.space_10,
+      marginVertical: SPACING.space_15,
+      alignItem: 'center',
+      justifyContent: 'center'
+    },
+    confirmButton:{
+      backgroundColor: COLORS.Red,
+      width: WIDTH*0.25,
+      borderRadius: SPACING.space_10,
+      paddingHorizontal: SPACING.space_18,
+      marginHorizontal: SPACING.space_10,
+      marginVertical: SPACING.space_15,
+      alignItem: 'center',
+      height: 30,
+      justifyContent: 'center'
+    },
 })

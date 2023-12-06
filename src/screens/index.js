@@ -14,6 +14,9 @@ import TicketDetail from "./TicketDetail";
 import Chat from "./Chat";
 import EditProfileScreen from "./EditProfileScreen";
 import ChangePassword from "./ChangePassword";
+import EnterOTP from "./EnterOTP";
+import UpdatePasswordScreen from "./UpdatePasswordScreen";
+import { EnterEmail, EnterOTPCode, EnterPassword } from "./GetPasswordScreen";
 export {
     LoginScreen,
     SignupScreen,
@@ -22,7 +25,8 @@ export {
     ProfileScreen,
     MovieDetailScreen,
     SelectShowtime,
-    GetPasswordScreen,
+    EnterEmail,
+    EnterOTPCode,
     SelectTheaterScreen, 
     OrderScreen,
     SelectSeatScreen,
@@ -30,5 +34,8 @@ export {
     TicketDetail,
     Chat,
     EditProfileScreen,
-    ChangePassword
+    ChangePassword,
+    EnterOTP,
+    UpdatePasswordScreen,
+    EnterPassword
 }

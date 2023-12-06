@@ -167,6 +167,8 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.Black,
     flex: 1,
+    paddingTop: 40,
+
   },
   infoMovieContainer: {
     paddingHorizontal: SPACING.space_15,

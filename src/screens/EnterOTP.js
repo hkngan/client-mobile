@@ -1,52 +1,64 @@
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, TextInput } from 'react-native'
+import React, { useContext, useState } from 'react'
 import { Heading } from '../components'
 import { COLORS, FONTSIZE, SPACING } from '../themes/theme'
-import { TextInput } from 'react-native-gesture-handler'
 import config from '../../config'
+import { useNavigation } from '@react-navigation/native'
 import { AuthContext } from '../context/authContext'
 import axios from 'axios'
-import { useNavigation } from '@react-navigation/native'
-const ChangePassword = () => {
-  const IPV4 = config.extra.IPV4
-  const PORT = config.extra.PORT
-  const navigation = useNavigation()
-  const {state} = useContext(AuthContext)
-  
-  const [email, setEmail] = useState('')
-  const [isAlertVisible, setAlertVisible] = useState(false);
 
-  const showAlert = () => {
-    setAlertVisible(true);
-  }
+const EnterOTP = () => {
+    const IPV4 = config.extra.IPV4
+    const PORT = config.extra.PORT
+    const navigation = useNavigation()
+    const {state} = useContext(AuthContext)
 
-  const hideAlert = () => {
-    setAlertVisible(false);
-  }
-  const handleCheck = async () => {
-    try {
-      const userEmail = state.user.email
-      if(userEmail !== email){
-        showAlert()
-      }else{
-        let response = await axios.post(`http://${IPV4}:${PORT}/api/v1/user/send-otp`, {
-          email: email
-        })
-        console.log(response.data)
-        navigation.navigate('EnterOTP')
-      }
-    } catch (error) {
-      console.error('Error in handleCheck function', error)
+    const [opt, setOtp] = useState('')
+    const [isAlertVisible, setAlertVisible] = useState(false);
+
+    const showAlert = () => {
+      setAlertVisible(true);
     }
-  }
+  
+    const hideAlert = () => {
+      setAlertVisible(false);
+    }
+
+    const handleCheck = async () => {
+        try {
+            const userEmail = state.user.email;
+            let response = await axios.post(`http://${IPV4}:${PORT}/api/v1/user/verify`, {
+                email: userEmail,
+                enteredVerificationCode: opt
+            });
+    
+            if (response.status === 200) {
+                navigation.navigate('UpdatePasswordScreen');
+            } else {
+                showAlert();
+            }
+        } catch (error) {
+            if (error.response) {
+                console.log('Server response:', error.response.data);
+                console.log('Status code:', error.response.status);
+                console.log('Headers:', error.response.headers);
+            } else if (error.request) {
+                console.log('No response received for the request');
+            } else {
+                console.log('Error during request:', error.message);
+            }
+                showAlert();
+        }
+    };
+    
   return (
     <SafeAreaView style={styles.container}>
-        <Heading header={'Update Password'}/>
+        <Heading header={'ENTER OTP CODE'}/>
         <TextInput 
           style={styles.inputContainer}
-          placeholder='Enter your email'
-          value={email}
-          onChangeText={(text) => setEmail(text)}
+          placeholder='Enter your OTP code'
+          value={opt}
+          onChangeText={(text) => setOtp(text)}
           placeholderTextColor={COLORS.WhiteRGBA50}
         />
         <TouchableOpacity style={styles.buttonContainer} onPress={handleCheck}>
@@ -62,7 +74,7 @@ const ChangePassword = () => {
           <View style={styles.alertBox}>
             <Text style={styles.titleAlert}>WARNING</Text>
             <Text style={styles.contentAlert}>
-              Email is not match
+              OTP is not match
             </Text>
             <View style={styles.btnContainer}>
               <TouchableOpacity 
@@ -79,14 +91,13 @@ const ChangePassword = () => {
   )
 }
 
-export default ChangePassword
-const screenWidth = Dimensions.get('window').width;
-
+export default EnterOTP
+const WIDTH = Dimensions.get('window').width
 const styles = StyleSheet.create({
     container:{
-      flex:1,
-      backgroundColor: COLORS.Black,
-      paddingTop: 40
+      paddingTop: 40,
+      flex: 1,
+      backgroundColor: COLORS.Black
     },
     inputContainer:{
       color: COLORS.White,
@@ -124,7 +135,7 @@ const styles = StyleSheet.create({
       backgroundColor: 'white', 
       padding: 20, 
       borderRadius: 10, 
-      width: screenWidth*0.7 ,
+      width: WIDTH*0.7 ,
       justifyContent: 'center', 
       alignItems: 'center'
     },
@@ -149,7 +160,7 @@ const styles = StyleSheet.create({
       borderColor: COLORS.Red,
       borderWidth: 1,
       borderRadius: SPACING.space_10,
-      width: screenWidth*0.25,
+      width: WIDTH*0.25,
       height: 30,
       paddingHorizontal: SPACING.space_18,
       marginHorizontal: SPACING.space_10,
@@ -159,7 +170,7 @@ const styles = StyleSheet.create({
     },
     confirmButton:{
       backgroundColor: COLORS.Red,
-      width: screenWidth*0.25,
+      width: WIDTH*0.25,
       borderRadius: SPACING.space_10,
       paddingHorizontal: SPACING.space_18,
       marginHorizontal: SPACING.space_10,

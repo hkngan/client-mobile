@@ -175,6 +175,8 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent: "center",
     paddingVertical: SPACING.space_8,
+    paddingTop: 40,
+
   },
   container: {
     display: "flex",

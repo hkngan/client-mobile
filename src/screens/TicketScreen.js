@@ -41,7 +41,7 @@ const TicketScreen = () => {
         {ticketData.length > 0 ? (ticketData.map((ticket) =>{
           const imagePath = ticket.itemInfo.img
           return (
-            <TouchableOpacity key={ticket._id} style={styles.ticketContainer}>
+            <View key={ticket._id} style={styles.ticketContainer}>
               <Image source={{uri: `http://${IPV4}:${PORT}/${imagePath}`}} style={styles.img} resizeMode='stretch' />
               <View style={styles.content}>
                 <Text style={styles.textTitle}>{ticket.itemInfo.name}</Text>
@@ -61,7 +61,7 @@ const TicketScreen = () => {
               { position: "absolute", top: 80, right: -30 },
             ]}
           ></View>
-            </TouchableOpacity>
+            </View>
           )
         })) : (
           <View style={{
@@ -85,7 +85,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.Black,
     justifyContent: 'center',
     alignItems: 'center',
-    flex: 1
+    flex: 1,
+    paddingTop: 40,
   },
   headerText:{
     color: COLORS.White,

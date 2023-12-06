@@ -202,6 +202,8 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.Black,
     display: "flex",
+    paddingTop: 40,
+
   },
   scrollviewContainer: {
     // flex: 1,

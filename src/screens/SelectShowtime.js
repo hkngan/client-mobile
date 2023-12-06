@@ -197,6 +197,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.Black,
     flex: 1,
+    paddingTop: 40,
   },
   containerGap24: {
     gap: SPACING.space_32,

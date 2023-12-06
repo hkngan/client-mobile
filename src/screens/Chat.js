@@ -78,9 +78,10 @@ const WIDTH = Dimensions.get('window').width
 const HEIGHT = Dimensions.get('window').height
 const styles = StyleSheet.create({
   container:{
+    flex:1,
     backgroundColor: COLORS.Black,
-    flex:1
-    },
+    paddingTop: 40
+  },
     headerText:{
       color: COLORS.White,
       fontSize: FONTSIZE.size_20,
