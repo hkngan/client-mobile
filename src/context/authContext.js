@@ -16,7 +16,8 @@ axios.defaults.baseURL= 'http://10.13.129.12:3001/api/v1'
             setState({...state, user:loginData?.user, token: loginData?.token}) 
         }
         loadStorageData()
-    }, []); const logout = () => {
+    }, []);
+     const logout = () => {
         AsyncStorage.removeItem('@auth');
         setState({
             accessToken: '',

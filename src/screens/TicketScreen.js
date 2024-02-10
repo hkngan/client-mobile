@@ -2,17 +2,17 @@ import { View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity, Dim
 import React, {useContext, useEffect, useState} from 'react'
 import { COLORS, FONTSIZE, SPACING } from '../themes/theme'
 import { useNavigation, useIsFocused } from '@react-navigation/native'
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, FontAwesome  } from '@expo/vector-icons';
 import axios from 'axios'
 import config from '../../config'
 import { AuthContext } from '../context/authContext'
+import { image } from '../constant';
 const TicketScreen = () => {
   const IPV4 = config.extra.IPV4
   const PORT = config.extra.PORT
   const navigation = useNavigation()
   const {state} = useContext(AuthContext)
   const {user} = state
-  const id= user._id
   // console.log("id",id)
   const [ticketData, setTicketData] = useState([])
   const isFocused = useIsFocused();
@@ -21,9 +21,10 @@ const TicketScreen = () => {
     if (isFocused) {
     const getData = async () => {
       try {
+        const id= user._id
         const response = await axios.get(`http://${IPV4}:${PORT}/api/v1/user/ticket-list/${id}`)
         const data = response.data.tickets
-        console.log(data)
+        // console.log(data._id)
         setTicketData(data)
         
       } catch (error) {
@@ -41,14 +42,17 @@ const TicketScreen = () => {
         {ticketData.length > 0 ? (ticketData.map((ticket) =>{
           const imagePath = ticket.itemInfo.img
           return (
-            <View key={ticket._id} style={styles.ticketContainer}>
+            <View key={ticket._id} style={styles.ticketContainer} 
+              onPress={()=> {navigation.navigate('TicketDetail',{orderId: ticketData[0]._id})}}>
               <Image source={{uri: `http://${IPV4}:${PORT}/${imagePath}`}} style={styles.img} resizeMode='stretch' />
               <View style={styles.content}>
                 <Text style={styles.textTitle}>{ticket.itemInfo.name}</Text>
                 <Text style={styles.text}>{ticket.theater}</Text>
-                <Text style={styles.text}>{ticket.date_start}/{ticket.time}</Text>
-                <Text style={styles.text}>Ghế: {ticket.itemInfo.seat.join(", ")} ({ticket.room}) </Text>
-              </View>
+                  <Text style={styles.text}>{ticket.date_start}/{ticket.time}</Text>
+                  <Text style={styles.text}>Ghế: {ticket.itemInfo.seat.join(", ")} ({ticket.room}) </Text>
+                  {/* <FontAwesome name="barcode" size={35} color="black" style={{width: 100}}/> */}
+                  <Image source={image.code} style={{width: 120, height:40}}/>
+                </View>
               <View
             style={[
               styles.blackCircle,
@@ -69,7 +73,7 @@ const TicketScreen = () => {
             justifyContent: 'center',
             alignSelf: 'center'
           }}>
-            <Ionicons name="cart" size={24} color={COLORS.White} />
+            <Ionicons name="cart" size={24} color={COLORS.White} style={{marginVertical: SPACING.space_10}}/>
             <Text style={styles.emtyText}>Your ticket list is empty</Text>
           </View>
         )}
@@ -100,7 +104,7 @@ const styles = StyleSheet.create({
     fontSize: FONTSIZE.size_16,
     textTransform: 'capitalize',
     alignSelf: 'center',
-    marginVertical: SPACING.space_36 * 2,
+    marginVertical: SPACING.space_20,
     textAlign:'center'
   },
   ticketContainer:{
@@ -127,8 +131,9 @@ const styles = StyleSheet.create({
     marginVertical: 3
   },
   text:{
-    width: WIDTH*0.4,
-    marginVertical: 3
+    width: WIDTH*0.35,
+    marginVertical: 3,
+    fontWeight: '500'
 
   },
   blackCircle: {

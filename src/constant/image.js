@@ -6,6 +6,6 @@ export default {
     paypal: require('../assets/image/paypal.jpg'),
     visa: require('../assets/image/visa.jpg'),
     zalo: require('../assets/image/zalo.png'),
-    avatar: require('../assets/image/avatar.png')
-
+    avatar: require('../assets/image/avatar.png'),
+    code: require('../assets/image/code.png')
 }

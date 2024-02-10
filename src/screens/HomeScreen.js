@@ -29,7 +29,7 @@ const HomeScreen = () => {
   const { setMovie } = useContext(BookingContext);
   const {state} = useContext(AuthContext)
   const {token} = state
-  console.log("token: ", token)
+  // console.log("token: ", token)
   const IPV4 = config.extra.IPV4
   const PORT = config.extra.PORT
   useEffect(() => {
